@@ -1,10 +1,21 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   // For static export to S3 (required for S3 deployment)
-  output: 'export',
+  // Only enable static export in production builds, not during development
+  ...(process.env.NODE_ENV === 'production' && { output: 'export' }),
   images: {
     unoptimized: true,
+  },
+  // Webpack config to resolve design-system path alias
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@design-system': path.resolve(__dirname, '../design-system/src'),
+    };
+    return config;
   },
   // Intentionally permissive CORS for lab (security vulnerability)
   async headers() {

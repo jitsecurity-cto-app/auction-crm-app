@@ -1,0 +1,74 @@
+.container {
+  padding: var(--spacing-8);
+}
+
+.loading {
+  padding: var(--spacing-8);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.pageTitle {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-8);
+  line-height: var(--line-height-tight);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+}
+
+.activitySection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+}
+
+.emptyState {
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.activityItem {
+  padding: var(--spacing-3);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activityDescription {
+  color: var(--text-primary);
+}
+
+.activityTime {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: var(--spacing-4);
+  }
+
+  .pageTitle {
+    font-size: var(--font-size-3xl);
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,8 @@
+/* App-specific styles */
+/* Design system theme is imported in layout.tsx */
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+

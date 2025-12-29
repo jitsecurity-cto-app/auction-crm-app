@@ -1,0 +1,25 @@
+.container {
+  max-width: 400px;
+  margin: var(--spacing-8) auto;
+}
+
+.title {
+  text-align: center;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.errorMessage {
+  padding: var(--spacing-3);
+  background-color: rgba(239, 68, 68, 0.2);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
