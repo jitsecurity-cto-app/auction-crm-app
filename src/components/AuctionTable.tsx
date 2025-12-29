@@ -13,6 +13,7 @@ import {
   Button,
 } from '@design-system/components';
 import { formatCurrency, formatDateTime } from '@design-system/utils';
+import WorkflowStateBadge from './WorkflowStateBadge';
 
 interface AuctionTableProps {
   auctions: Auction[];
@@ -37,6 +38,7 @@ export default function AuctionTable({ auctions, onDelete }: AuctionTableProps) 
         <TableRow>
           <TableHead>Title</TableHead>
           <TableHead>Status</TableHead>
+          <TableHead>Workflow State</TableHead>
           <TableHead>Starting Price</TableHead>
           <TableHead>Current Bid</TableHead>
           <TableHead>End Time</TableHead>
@@ -46,7 +48,7 @@ export default function AuctionTable({ auctions, onDelete }: AuctionTableProps) 
       <TableBody>
         {auctions.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={6} style={{ textAlign: 'center', padding: '3rem' }}>
+            <TableCell colSpan={7} style={{ textAlign: 'center', padding: '3rem' }}>
               No auctions found
             </TableCell>
           </TableRow>
@@ -69,6 +71,9 @@ export default function AuctionTable({ auctions, onDelete }: AuctionTableProps) 
                 <Badge variant={getStatusVariant(auction.status)} size="sm">
                   {auction.status}
                 </Badge>
+              </TableCell>
+              <TableCell>
+                <WorkflowStateBadge state={auction.workflow_state} size="sm" />
               </TableCell>
               <TableCell>{formatCurrency(auction.starting_price)}</TableCell>
               <TableCell style={{ fontWeight: 'var(--font-weight-medium)' }}>

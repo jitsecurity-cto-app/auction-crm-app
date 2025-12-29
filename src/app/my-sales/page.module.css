@@ -1,0 +1,115 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.message {
+  margin-bottom: 1rem;
+}
+
+.error {
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.salesList {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.saleCard {
+  transition: box-shadow 0.2s;
+}
+
+.saleCard:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.saleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.saleHeader h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.saleHeader h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.saleHeader h3 a:hover {
+  text-decoration: underline;
+}
+
+.salePrice {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #059669;
+}
+
+.saleDescription {
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.saleMeta {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metaLabel {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.metaValue {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.paymentStatus {
+  text-transform: capitalize;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.saleFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.completedDate {
+  color: #6b7280;
+  font-size: 0.875rem;
+}

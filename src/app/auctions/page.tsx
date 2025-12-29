@@ -8,6 +8,7 @@ import { api } from '../../lib/api';
 import { Auction } from '../../types';
 import AuctionTable from '../../components/AuctionTable';
 import AdvancedSearch from '../../components/AdvancedSearch';
+import WorkflowStateFilter from '../../components/WorkflowStateFilter';
 import { Button, Card } from '@design-system/components';
 import styles from './page.module.css';
 
@@ -19,6 +20,7 @@ export default function AuctionsPage() {
   const [searchFilters, setSearchFilters] = useState<{
     search?: string;
     status?: string;
+    workflow_state?: string;
     minPrice?: number;
     maxPrice?: number;
   }>({});
@@ -34,9 +36,19 @@ export default function AuctionsPage() {
   const loadAuctions = async (filters?: typeof searchFilters) => {
     try {
       setLoading(true);
-      // API returns array directly, not wrapped in { data: [...] }
-      const response = await api.getAuctions(filters || searchFilters);
-      setAuctions(Array.isArray(response) ? response : []);
+      const activeFilters = filters || searchFilters;
+      
+      // If workflow_state filter is set, use the workflow endpoint
+      if (activeFilters.workflow_state) {
+        const response = await api.getAuctionsByWorkflow({
+          workflow_state: activeFilters.workflow_state,
+        });
+        setAuctions(Array.isArray(response) ? response : []);
+      } else {
+        // Otherwise use the regular auctions endpoint
+        const response = await api.getAuctions(activeFilters);
+        setAuctions(Array.isArray(response) ? response : []);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load auctions');
       console.error('Error loading auctions:', err);
@@ -94,6 +106,19 @@ export default function AuctionsPage() {
       )}
 
       <AdvancedSearch onSearch={handleSearch} onClear={handleClear} />
+
+      <Card variant="outlined" padding="md" style={{ marginBottom: 'var(--spacing-4)' }}>
+        <div style={{ display: 'flex', gap: 'var(--spacing-4)', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+          <WorkflowStateFilter
+            value={searchFilters.workflow_state || ''}
+            onChange={(value) => {
+              const newFilters = { ...searchFilters, workflow_state: value || undefined };
+              setSearchFilters(newFilters);
+              loadAuctions(newFilters);
+            }}
+          />
+        </div>
+      </Card>
 
       <AuctionTable auctions={auctions} onDelete={handleDelete} />
     </div>

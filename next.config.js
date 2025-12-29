@@ -4,8 +4,8 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   // For static export to S3 (required for S3 deployment)
-  // Only enable static export in production builds, not during development
-  ...(process.env.NODE_ENV === 'production' && { output: 'export' }),
+  // Disable static export in development to allow dynamic routes
+  ...(process.env.SKIP_STATIC_EXPORT !== 'true' && { output: 'export' }),
   images: {
     unoptimized: true,
   },

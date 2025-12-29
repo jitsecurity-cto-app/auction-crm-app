@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { getAuthUser, isAuthenticated, logout } from '../lib/auth';
-import { Navbar as DesignSystemNavbar } from '@design-system/components';
+import { Navbar as DesignSystemNavbar, Button } from '@design-system/components';
+import Link from 'next/link';
 
 export default function Navbar() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -34,10 +35,21 @@ export default function Navbar() {
 
   const links = authenticated
     ? [
+        { href: '/', label: 'Dashboard' },
         { href: '/auctions', label: 'Auctions' },
         { href: '/users', label: 'Users' },
+        { href: '/orders', label: 'Orders' },
+        { href: '/disputes', label: 'Disputes' },
       ]
     : [];
+
+  const rightContent = !authenticated ? (
+    <Link href="/login">
+      <Button variant="primary" size="sm">
+        Login
+      </Button>
+    </Link>
+  ) : undefined;
 
   return (
     <DesignSystemNavbar
@@ -46,6 +58,7 @@ export default function Navbar() {
       authenticated={authenticated}
       user={user || undefined}
       onLogout={handleLogout}
+      rightContent={rightContent}
     />
   );
 }

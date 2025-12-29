@@ -23,6 +23,83 @@
   margin-bottom: var(--spacing-8);
 }
 
+.widgetsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+}
+
+.workflowStats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.workflowStatItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-2);
+}
+
+.workflowCount {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.disputeStats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.disputeStatItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-2);
+}
+
+.disputeLabel {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+}
+
+.disputeTotal {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.recentDisputes {
+  margin-top: var(--spacing-4);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--border-primary);
+}
+
+.disputeItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+.disputeItem:hover {
+  background-color: var(--bg-secondary);
+}
+
+.disputeId {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-family: var(--font-family-mono);
+}
+
 .activitySection {
   display: grid;
   grid-template-columns: 1fr;

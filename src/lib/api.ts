@@ -293,6 +293,175 @@ export const api = {
       return null;
     }
   },
+
+  // My Auctions/Sales endpoints
+  async getMyAuctions(userId: string) {
+    return apiRequest<any[]>(`/users/${userId}/my-auctions`);
+  },
+
+  async getMySales(userId: string) {
+    return apiRequest<any[]>(`/users/${userId}/my-sales`);
+  },
+
+  // Payment status endpoints
+  async updatePaymentStatus(bidId: number, paymentStatus: string) {
+    return apiRequest<any>(`/bids/${bidId}/payment-status`, {
+      method: 'PUT',
+      body: JSON.stringify({ payment_status: paymentStatus }),
+    });
+  },
+
+  // Order endpoints
+  async getOrders(params?: {
+    buyer_id?: string;
+    seller_id?: string;
+    status?: string;
+    payment_status?: string;
+    shipping_status?: string;
+    limit?: number;
+    offset?: number;
+  }) {
+    const queryParams = new URLSearchParams();
+    if (params?.buyer_id) queryParams.append('buyer_id', params.buyer_id);
+    if (params?.seller_id) queryParams.append('seller_id', params.seller_id);
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.payment_status) queryParams.append('payment_status', params.payment_status);
+    if (params?.shipping_status) queryParams.append('shipping_status', params.shipping_status);
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    
+    const queryString = queryParams.toString();
+    const endpoint = queryString ? `/orders?${queryString}` : '/orders';
+    return apiRequest<any[]>(endpoint);
+  },
+
+  async getOrderById(id: string) {
+    return apiRequest<any>(`/orders/${id}`);
+  },
+
+  async updateOrder(id: string, data: Partial<any>) {
+    return apiRequest<any>(`/orders/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Auction closure endpoints
+  async closeAuction(id: string) {
+    return apiRequest<any>(`/auctions/${id}/close`, {
+      method: 'POST',
+    });
+  },
+
+  async closeExpiredAuctions() {
+    return apiRequest<any>('/auctions/close-expired', {
+      method: 'POST',
+    });
+  },
+
+  // Workflow endpoints
+  async getAuctionsByWorkflow(params?: {
+    workflow_state?: string;
+    role?: 'seller' | 'buyer';
+    limit?: number;
+    offset?: number;
+  }) {
+    const queryParams = new URLSearchParams();
+    if (params?.workflow_state) queryParams.append('workflow_state', params.workflow_state);
+    if (params?.role) queryParams.append('role', params.role);
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    
+    const queryString = queryParams.toString();
+    const endpoint = queryString ? `/auctions/workflow?${queryString}` : '/auctions/workflow';
+    try {
+      const response = await apiRequest<any>(endpoint);
+      // Handle both array and object with data property
+      if (Array.isArray(response)) {
+        return response;
+      } else if (response && Array.isArray(response.data)) {
+        return response.data;
+      } else if (response && response.data) {
+        return [response.data];
+      }
+      return [];
+    } catch (error) {
+      console.error('getAuctionsByWorkflow error:', error);
+      throw error;
+    }
+  },
+
+  async updateWorkflowState(auctionId: string, workflowState: string) {
+    return apiRequest<any>(`/auctions/${auctionId}/workflow-state`, {
+      method: 'PUT',
+      body: JSON.stringify({ workflow_state: workflowState }),
+      requireAuth: true,
+    });
+  },
+
+  // Dispute endpoints
+  async getDisputes(params?: {
+    auction_id?: string;
+    order_id?: string;
+    status?: string;
+    filed_by?: string;
+    limit?: number;
+    offset?: number;
+  }) {
+    const queryParams = new URLSearchParams();
+    if (params?.auction_id) queryParams.append('auction_id', params.auction_id);
+    if (params?.order_id) queryParams.append('order_id', params.order_id);
+    if (params?.status) queryParams.append('status', params.status);
+    if (params?.filed_by) queryParams.append('filed_by', params.filed_by);
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.offset) queryParams.append('offset', params.offset.toString());
+    
+    const queryString = queryParams.toString();
+    const endpoint = queryString ? `/disputes?${queryString}` : '/disputes';
+    try {
+      const response = await apiRequest<any[]>(endpoint);
+      return Array.isArray(response) ? response : [];
+    } catch (error) {
+      console.error('getDisputes error:', error);
+      throw error;
+    }
+  },
+
+  async getDisputeById(id: string) {
+    return apiRequest<any>(`/disputes/${id}`);
+  },
+
+  async createDispute(data: {
+    auction_id: string;
+    order_id?: string;
+    reason: string;
+    filed_by_role: 'seller' | 'buyer';
+  }) {
+    return apiRequest<any>('/disputes', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      requireAuth: true,
+    });
+  },
+
+  async updateDispute(id: string, data: Partial<{
+    status: string;
+    resolution: string;
+  }>) {
+    return apiRequest<any>(`/disputes/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      requireAuth: true,
+    });
+  },
+
+  async resolveDispute(id: string, resolution: string) {
+    return apiRequest<any>(`/disputes/${id}/resolve`, {
+      method: 'PUT',
+      body: JSON.stringify({ resolution, status: 'resolved' }),
+      requireAuth: true,
+    });
+  },
 };
 
 export default api;

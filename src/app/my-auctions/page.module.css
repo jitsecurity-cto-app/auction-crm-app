@@ -1,0 +1,103 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.message {
+  margin-bottom: 1rem;
+}
+
+.error {
+  color: #dc2626;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.auctionsList {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.auctionCard {
+  transition: box-shadow 0.2s;
+}
+
+.auctionCard:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.auctionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.auctionHeader h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.auctionHeader h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.auctionHeader h3 a:hover {
+  text-decoration: underline;
+}
+
+/* Status now uses Badge component from design system */
+
+.auctionDescription {
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.auctionMeta {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metaLabel {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.metaValue {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.auctionFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.endTime {
+  color: #6b7280;
+  font-size: 0.875rem;
+}

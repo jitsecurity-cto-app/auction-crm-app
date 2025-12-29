@@ -85,9 +85,10 @@ describe('Admin Operations Flow E2E Tests', () => {
         },
       ];
 
-      (api.getAuctions as jest.Mock).mockResolvedValue({ data: mockAuctions });
-      (api.getUsers as jest.Mock).mockResolvedValue({ data: mockUsers });
-      (api.getBidsByAuction as jest.Mock).mockResolvedValue({ data: [] });
+      // Dashboard expects arrays directly, not wrapped in { data: [...] }
+      (api.getAuctions as jest.Mock).mockResolvedValue(mockAuctions);
+      (api.getUsers as jest.Mock).mockResolvedValue(mockUsers);
+      (api.getBidsByAuction as jest.Mock).mockResolvedValue([]);
 
       render(<Dashboard />);
 
@@ -131,10 +132,10 @@ describe('Admin Operations Flow E2E Tests', () => {
 
       render(<AuctionForm onSubmit={mockOnSubmit} />);
 
-      const titleInput = screen.getByLabelText('Title *');
-      const descriptionInput = screen.getByLabelText('Description *');
-      const priceInput = screen.getByLabelText('Starting Price ($) *');
-      const endTimeInput = screen.getByLabelText('End Time *');
+      const titleInput = screen.getByLabelText('Title');
+      const descriptionInput = screen.getByLabelText('Description');
+      const priceInput = screen.getByLabelText('Starting Price ($)');
+      const endTimeInput = screen.getByLabelText('End Time');
       const submitButton = screen.getByRole('button', { name: /Create Auction/i });
 
       // Test that any input format is accepted (no validation)
@@ -180,7 +181,7 @@ describe('Admin Operations Flow E2E Tests', () => {
 
       render(<AuctionForm auction={mockAuction} onSubmit={mockOnSubmit} />);
 
-      const descriptionInput = screen.getByLabelText('Description *');
+      const descriptionInput = screen.getByLabelText('Description');
       await userEvent.clear(descriptionInput);
       await userEvent.type(descriptionInput, '<script>document.cookie="stolen"</script>');
 
@@ -243,6 +244,7 @@ describe('Admin Operations Flow E2E Tests', () => {
       expect(screen.getByText('exposed-hash-123')).toBeInTheDocument();
 
       // Change role without server-side validation
+      // UserForm uses "Role *" as the label text
       const roleSelect = screen.getByLabelText('Role *');
       await userEvent.selectOptions(roleSelect, 'admin');
 
@@ -271,8 +273,8 @@ describe('Admin Operations Flow E2E Tests', () => {
 
       render(<UserForm user={mockUser} onSubmit={mockOnSubmit} />);
 
-      const emailInput = screen.getByLabelText('Email *') as HTMLInputElement;
-      const nameInput = screen.getByLabelText('Name *') as HTMLInputElement;
+      const emailInput = screen.getByLabelText('Email') as HTMLInputElement;
+      const nameInput = screen.getByLabelText('Name') as HTMLInputElement;
 
       // Test that any input format is accepted in the input fields (no validation)
       await userEvent.clear(emailInput);
@@ -329,7 +331,8 @@ describe('Admin Operations Flow E2E Tests', () => {
       const { container } = render(<AuctionForm auction={mockAuction as Auction} onSubmit={mockOnSubmit} />);
 
       // Verify that XSS payload is present in form
-      const descriptionInput = screen.getByLabelText('Description *') as HTMLTextAreaElement;
+      // Textarea component doesn't add asterisk for required fields
+      const descriptionInput = screen.getByLabelText('Description') as HTMLTextAreaElement;
       expect(descriptionInput.value).toContain('<img');
       expect(descriptionInput.value).toContain('onerror');
     });

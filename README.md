@@ -9,11 +9,14 @@ The CRM App is a Next.js application that provides administrative tools for mana
 ## Features
 
 - Manage auctions (create, edit, delete)
-- User management
+- Close auctions and determine winners
+- User management (including contact information)
+- Order management (view, update shipping status, payment status)
 - View all bids and transactions
 - Analytics dashboard
 - System configuration
 - Admin authentication
+- View my auctions and sales with payment status tracking
 
 ## Security Vulnerabilities
 
@@ -82,8 +85,11 @@ crm-app/
 │   │   ├── layout.tsx
 │   │   ├── page.tsx
 │   │   ├── auctions/
+│   │   ├── orders/
 │   │   ├── users/
 │   │   ├── analytics/
+│   │   ├── my-auctions/    # Admin's created auctions
+│   │   ├── my-sales/       # Admin's completed sales
 │   │   └── login/
 │   ├── components/       # React components
 │   │   ├── AuctionTable.tsx
