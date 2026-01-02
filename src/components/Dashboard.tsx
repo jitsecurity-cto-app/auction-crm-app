@@ -241,7 +241,7 @@ export default function Dashboard() {
                 {recentDisputes.map((dispute) => (
                   <Link key={dispute.id} href={`/disputes/${dispute.id}`}>
                     <div className={styles.disputeItem}>
-                      <span className={styles.disputeId}>#{dispute.id.slice(0, 8)}</span>
+                      <span className={styles.disputeId}>#{String(dispute.id).slice(0, 8)}</span>
                       <Badge variant={dispute.status === 'open' ? 'error' : dispute.status === 'in_review' ? 'warning' : 'success'} size="sm">
                         {dispute.status}
                       </Badge>

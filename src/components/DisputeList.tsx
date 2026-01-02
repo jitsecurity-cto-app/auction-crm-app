@@ -71,7 +71,7 @@ export default function DisputeList({ disputes, onStatusChange }: DisputeListPro
                     fontWeight: 'var(--font-weight-medium)',
                   }}
                 >
-                  #{dispute.id.slice(0, 8)}
+                  #{String(dispute.id).slice(0, 8)}
                 </Link>
               </TableCell>
               <TableCell>
@@ -101,7 +101,7 @@ export default function DisputeList({ disputes, onStatusChange }: DisputeListPro
                     {dispute.filer.name || dispute.filer.email}
                   </Link>
                 ) : (
-                  <span style={{ color: 'var(--text-secondary)' }}>User {dispute.filed_by.slice(0, 8)}</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>User {String(dispute.filed_by).slice(0, 8)}</span>
                 )}
               </TableCell>
               <TableCell>

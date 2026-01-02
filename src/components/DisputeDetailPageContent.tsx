@@ -142,7 +142,7 @@ export default function DisputeDetailPageContent({ id }: DisputeDetailPageConten
             ← Back to Disputes
           </Button>
         </Link>
-        <h1 className={styles.title}>Dispute #{dispute.id.slice(0, 8)}</h1>
+        <h1 className={styles.title}>Dispute #{String(dispute.id).slice(0, 8)}</h1>
         <Badge variant={getStatusVariant(dispute.status)} size="lg">
           {dispute.status}
         </Badge>
@@ -177,7 +177,7 @@ export default function DisputeDetailPageContent({ id }: DisputeDetailPageConten
                       {dispute.filer.name || dispute.filer.email}
                     </Link>
                   ) : (
-                    `User ${dispute.filed_by.slice(0, 8)}`
+                    `User ${String(dispute.filed_by).slice(0, 8)}`
                   )}
                 </span>
               </div>
