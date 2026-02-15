@@ -8,12 +8,13 @@ terraform {
     }
   }
 
-  # Uncomment and configure for remote state
-  # backend "s3" {
-  #   bucket = "your-terraform-state-bucket"
-  #   key    = "crm-app/terraform.tfstate"
-  #   region = "us-east-1"
-  # }
+  backend "s3" {
+    bucket         = "jit-auction-lab-terraform-state"
+    key            = "crm-app/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "jit-auction-lab-terraform-locks"
+    encrypt        = true
+  }
 }
 
 provider "aws" {
