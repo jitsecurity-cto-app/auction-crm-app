@@ -15,10 +15,5 @@ export default function LoginPage() {
     }
   }, [router]);
 
-  return (
-    <main style={{ minHeight: 'calc(100vh - 80px)', padding: '2rem' }}>
-      <AdminLoginForm />
-    </main>
-  );
+  return <AdminLoginForm />;
 }
-

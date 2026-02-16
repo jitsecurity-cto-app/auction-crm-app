@@ -6,8 +6,6 @@ import { isAuthenticated } from '../../lib/auth';
 import { api } from '../../lib/api';
 import { User } from '../../types';
 import UserTable from '../../components/UserTable';
-import { Card } from '@design-system/components';
-import styles from './page.module.css';
 
 export default function UsersPage() {
   const router = useRouter();
@@ -56,31 +54,39 @@ export default function UsersPage() {
 
   if (loading) {
     return (
-      <div className={styles.loading}>
-        <p>Loading users...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600 mx-auto mb-4"></div>
+          <p className="text-slate-500">Loading users...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>User Management</h1>
+    <div>
+      {/* Page Header */}
+      <div className="border-b border-slate-200 bg-white px-8 py-6">
+        <h1 className="text-2xl font-bold text-slate-900">User Management</h1>
+        <p className="text-slate-500 mt-1">Manage platform users and their roles</p>
+      </div>
 
-      {error && (
-        <Card variant="outlined" padding="md" className={styles.errorCard}>
-          <p className={styles.errorText}>{error}</p>
-        </Card>
-      )}
+      <div className="p-8">
+        {error && (
+          <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700 mb-6">
+            {error}
+          </div>
+        )}
 
-      <Card variant="outlined" padding="md" className={styles.warningCard}>
-        <p className={styles.warningTitle}>Security Note:</p>
-        <p className={styles.warningText}>
-          This page intentionally displays sensitive user data (password hashes) and allows editing without proper authorization checks (IDOR vulnerability).
-        </p>
-      </Card>
+        <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 mb-6">
+          <p className="text-sm font-medium text-amber-800">Security Note:</p>
+          <p className="text-sm text-amber-700 mt-1">
+            This page intentionally displays sensitive user data (password hashes) and allows editing without proper authorization checks (IDOR vulnerability).
+          </p>
+        </div>
 
-      <UserTable users={users} onDelete={handleDelete} />
+        <UserTable users={users} onDelete={handleDelete} />
+      </div>
     </div>
   );
 }
-

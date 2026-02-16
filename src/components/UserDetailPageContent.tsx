@@ -52,27 +52,55 @@ export default function UserDetailPageContent({ id }: UserDetailPageContentProps
 
   if (loading) {
     return (
-      <div style={{ padding: 'var(--spacing-8)', textAlign: 'center', color: 'var(--text-secondary)' }}>
-        <p>Loading user...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600 mx-auto mb-4"></div>
+          <p className="text-slate-500">Loading user...</p>
+        </div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div style={{ padding: 'var(--spacing-8)', textAlign: 'center', color: 'var(--text-secondary)' }}>
-        <p>User not found</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-slate-500">User not found</p>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: 'var(--spacing-8)' }}>
-      <UserForm
-        user={user}
-        onSubmit={handleSubmit}
-        onCancel={() => router.push('/users')}
-      />
+    <div>
+      {/* Page Header */}
+      <div className="border-b border-slate-200 bg-white px-8 py-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push('/users')}
+              className="text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+            <h1 className="text-2xl font-bold text-slate-900">Edit User</h1>
+          </div>
+          <button
+            onClick={() => router.push('/users')}
+            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+          >
+            Back to Users
+          </button>
+        </div>
+      </div>
+
+      <div className="p-8 max-w-2xl">
+        <UserForm
+          user={user}
+          onSubmit={handleSubmit}
+          onCancel={() => router.push('/users')}
+        />
+      </div>
     </div>
   );
 }

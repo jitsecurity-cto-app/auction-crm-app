@@ -15,10 +15,5 @@ export default function AdminDashboard() {
     }
   }, [router]);
 
-  return (
-    <main>
-      <Dashboard />
-    </main>
-  );
+  return <Dashboard />;
 }
-

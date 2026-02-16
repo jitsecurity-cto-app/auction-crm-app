@@ -1,8 +1,5 @@
 'use client';
 
-import { Badge } from '@design-system/components';
-import styles from './WorkflowVisualization.module.css';
-
 type WorkflowState = 'active' | 'pending_sale' | 'shipping' | 'complete';
 
 interface WorkflowVisualizationProps {
@@ -11,65 +8,69 @@ interface WorkflowVisualizationProps {
 
 const workflowSteps = [
   { id: 'active', label: 'Active Bidding', key: 'active' as WorkflowState },
-  { id: 'pending_sale', label: 'Pending Sale Completion', key: 'pending_sale' as WorkflowState },
+  { id: 'pending_sale', label: 'Pending Sale', key: 'pending_sale' as WorkflowState },
   { id: 'shipping', label: 'Shipped', key: 'shipping' as WorkflowState },
   { id: 'complete', label: 'Complete', key: 'complete' as WorkflowState },
 ];
 
 export default function WorkflowVisualization({ currentState }: WorkflowVisualizationProps) {
   const getStepStatus = (stepKey: WorkflowState) => {
-    const currentIndex = workflowSteps.findIndex(s => s.key === currentState);
-    const stepIndex = workflowSteps.findIndex(s => s.key === stepKey);
-    
-    if (stepIndex < currentIndex) {
-      return 'completed';
-    } else if (stepIndex === currentIndex) {
-      return 'active';
-    } else {
-      return 'pending';
-    }
-  };
+    const currentIndex = workflowSteps.findIndex((s) => s.key === currentState);
+    const stepIndex = workflowSteps.findIndex((s) => s.key === stepKey);
 
-  const getBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'success';
-      case 'active':
-        return 'info';
-      default:
-        return 'default';
-    }
+    if (stepIndex < currentIndex) return 'completed';
+    if (stepIndex === currentIndex) return 'active';
+    return 'pending';
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.workflowSteps}>
-        {workflowSteps.map((step, index) => {
-          const status = getStepStatus(step.key);
-          const isLast = index === workflowSteps.length - 1;
-          const prevStatus = index > 0 ? getStepStatus(workflowSteps[index - 1].key) : null;
-          
-          return (
-            <div key={step.id} className={styles.stepContainer}>
-              <div className={styles.step}>
-                <div className={`${styles.stepCircle} ${styles[status]}`}>
-                  {status === 'completed' && <span className={styles.checkmark}>✓</span>}
-                  {status === 'active' && <span className={styles.activeDot}></span>}
-                  {status === 'pending' && <span className={styles.pendingDot}></span>}
-                </div>
-                <Badge variant={getBadgeVariant(status)} size="sm" className={styles.stepBadge}>
-                  {step.label}
-                </Badge>
+    <div className="flex items-center gap-0 overflow-x-auto py-2">
+      {workflowSteps.map((step, index) => {
+        const status = getStepStatus(step.key);
+        const isLast = index === workflowSteps.length - 1;
+
+        return (
+          <div key={step.id} className="flex items-center">
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                  status === 'completed'
+                    ? 'bg-emerald-500 text-white'
+                    : status === 'active'
+                    ? 'bg-primary-600 text-white ring-4 ring-primary-100'
+                    : 'bg-slate-200 text-slate-500'
+                }`}
+              >
+                {status === 'completed' ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-5 w-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                ) : (
+                  index + 1
+                )}
               </div>
-              {!isLast && (
-                <div className={`${styles.arrow} ${prevStatus === 'completed' || status === 'completed' ? styles.completed : ''}`}>
-                  →
-                </div>
-              )}
+              <span
+                className={`text-xs font-medium whitespace-nowrap ${
+                  status === 'completed'
+                    ? 'text-emerald-600'
+                    : status === 'active'
+                    ? 'text-primary-600'
+                    : 'text-slate-400'
+                }`}
+              >
+                {step.label}
+              </span>
             </div>
-          );
-        })}
-      </div>
+            {!isLast && (
+              <div
+                className={`h-0.5 w-12 mx-2 mt-[-1.25rem] ${
+                  status === 'completed' ? 'bg-emerald-500' : 'bg-slate-200'
+                }`}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

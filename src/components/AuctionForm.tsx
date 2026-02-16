@@ -1,9 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Auction } from '../types';
-import { Card, CardHeader, CardTitle, CardContent, Button, Input, Textarea } from '@design-system/components';
-import styles from './AuctionForm.module.css';
 
 interface AuctionFormProps {
   auction?: Auction;
@@ -21,7 +19,7 @@ export default function AuctionForm({ auction, onSubmit, onCancel }: AuctionForm
   const [description, setDescription] = useState(auction?.description || '');
   const [startingPrice, setStartingPrice] = useState(auction?.starting_price?.toString() || '');
   const [endTime, setEndTime] = useState(
-    auction?.end_time 
+    auction?.end_time
       ? new Date(auction.end_time).toISOString().slice(0, 16)
       : ''
   );
@@ -51,87 +49,103 @@ export default function AuctionForm({ auction, onSubmit, onCancel }: AuctionForm
   };
 
   return (
-    <Card variant="elevated" padding="lg" className={styles.formCard}>
-      <CardHeader>
-        <CardTitle>
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-200">
+        <h2 className="text-lg font-semibold text-slate-900">
           {auction ? 'Edit Auction' : 'Create New Auction'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className={styles.form}>
+        </h2>
+      </div>
+      <div className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className={styles.errorMessage} role="alert">
+            <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700" role="alert">
               {error}
             </div>
           )}
 
-          <Input
-            label="Title"
-            id="auction-title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            fullWidth
-          />
-
-          <Textarea
-            label="Description"
-            id="auction-description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            rows={6}
-            helperText="Note: Description will be rendered without sanitization (XSS vulnerability)"
-            fullWidth
-          />
-
-          <div className={styles.grid}>
-            <Input
-              label="Starting Price ($)"
-              id="auction-price"
-              type="number"
-              step="0.01"
-              min="0"
-              value={startingPrice}
-              onChange={(e) => setStartingPrice(e.target.value)}
+          <div>
+            <label htmlFor="auction-title" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Title
+            </label>
+            <input
+              id="auction-title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               required
-              fullWidth
-            />
-
-            <Input
-              label="End Time"
-              id="auction-end-time"
-              type="datetime-local"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              required
-              fullWidth
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
             />
           </div>
 
-          <div className={styles.actions}>
+          <div>
+            <label htmlFor="auction-description" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Description
+            </label>
+            <textarea
+              id="auction-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              rows={6}
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-vertical"
+            />
+            <p className="mt-1 text-xs text-slate-400">
+              Note: Description will be rendered without sanitization (XSS vulnerability)
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="auction-price" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Starting Price ($)
+              </label>
+              <input
+                id="auction-price"
+                type="number"
+                step="0.01"
+                min="0"
+                value={startingPrice}
+                onChange={(e) => setStartingPrice(e.target.value)}
+                required
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="auction-end-time" className="block text-sm font-medium text-slate-700 mb-1.5">
+                End Time
+              </label>
+              <input
+                id="auction-end-time"
+                type="datetime-local"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                required
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
             {onCancel && (
-              <Button
+              <button
                 type="button"
-                variant="secondary"
                 onClick={onCancel}
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
               >
                 Cancel
-              </Button>
+              </button>
             )}
-            <Button
+            <button
               type="submit"
-              variant="primary"
-              isLoading={loading}
               disabled={loading}
+              className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Saving...' : auction ? 'Update Auction' : 'Create Auction'}
-            </Button>
+            </button>
           </div>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
-

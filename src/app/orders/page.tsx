@@ -6,10 +6,8 @@ import Link from 'next/link';
 import { isAuthenticated } from '../../lib/auth';
 import { api } from '../../lib/api';
 import { Order } from '../../types';
-import { Button, Card, Badge, Input } from '@design-system/components';
 import { formatCurrency } from '@design-system/utils';
 import WorkflowStateBadge from '../../components/WorkflowStateBadge';
-import styles from './page.module.css';
 
 export default function OrdersPage() {
   const router = useRouter();
@@ -42,10 +40,10 @@ export default function OrdersPage() {
       const response = await api.getOrders(filterParams || filters);
       const ordersList = Array.isArray(response) ? response : [];
       setAllOrders(ordersList);
-      
+
       // Apply client-side filtering
       let filtered = ordersList;
-      
+
       // Filter by workflow state if specified
       if (filterParams?.workflow_state || filters.workflow_state) {
         const workflowFilter = filterParams?.workflow_state || filters.workflow_state;
@@ -53,7 +51,7 @@ export default function OrdersPage() {
           return order.auction?.workflow_state === workflowFilter;
         });
       }
-      
+
       // Apply search filtering if search query exists
       if (filterParams?.search || filters.search) {
         const searchTerm = (filterParams?.search || filters.search || '').toLowerCase();
@@ -64,7 +62,7 @@ export default function OrdersPage() {
           const sellerName = order.seller?.name?.toLowerCase() || '';
           const sellerEmail = order.seller?.email?.toLowerCase() || '';
           const auctionTitle = order.auction?.title?.toLowerCase() || '';
-          
+
           return (
             orderId.includes(searchTerm) ||
             buyerName.includes(searchTerm) ||
@@ -75,7 +73,7 @@ export default function OrdersPage() {
           );
         });
       }
-      
+
       setOrders(filtered);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load orders');
@@ -98,121 +96,142 @@ export default function OrdersPage() {
     loadOrders(newFilters);
   };
 
-
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusClasses = (status: string): string => {
     switch (status) {
       case 'completed':
       case 'delivered':
-        return 'success';
+        return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
       case 'shipped':
       case 'paid':
-        return 'info';
+        return 'bg-blue-50 text-blue-700 ring-blue-600/20';
       case 'pending_payment':
       case 'pending':
-        return 'warning';
+        return 'bg-amber-50 text-amber-700 ring-amber-600/20';
       case 'cancelled':
-        return 'error';
+        return 'bg-red-50 text-red-700 ring-red-600/20';
       default:
-        return 'default';
+        return 'bg-slate-50 text-slate-700 ring-slate-600/20';
     }
   };
 
   if (loading) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loading}>
-          <p>Loading orders...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600 mx-auto mb-4"></div>
+          <p className="text-slate-500">Loading orders...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Order Management</h1>
-        <div className={styles.actions}>
-          <Button variant="primary" onClick={() => api.closeExpiredAuctions()}>
+    <div>
+      {/* Page Header */}
+      <div className="border-b border-slate-200 bg-white px-8 py-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Order Management</h1>
+            <p className="text-slate-500 mt-1">View and manage all platform orders</p>
+          </div>
+          <button
+            onClick={() => api.closeExpiredAuctions()}
+            className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 transition-colors"
+          >
             Close Expired Auctions
-          </Button>
+          </button>
         </div>
       </div>
 
-      {error && (
-        <Card variant="outlined" padding="md" className={styles.errorCard}>
-          <p>{error}</p>
-        </Card>
-      )}
+      <div className="p-8">
+        {error && (
+          <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700 mb-6">
+            {error}
+          </div>
+        )}
 
-      <Card variant="outlined" padding="md" className={styles.filtersCard}>
-        <div className={styles.filters}>
-          <div className={styles.searchGroup}>
-            <Input
-              id="order-search"
-              label="Search Orders"
-              type="text"
-              placeholder="Search by order ID, buyer, seller, or auction title..."
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-              fullWidth
-            />
+        {/* Filters */}
+        <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+          <h3 className="text-sm font-semibold text-slate-900 mb-4">Filters</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="lg:col-span-2">
+              <label htmlFor="order-search" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Search Orders
+              </label>
+              <input
+                id="order-search"
+                type="text"
+                placeholder="Search by order ID, buyer, seller, or auction..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="status-filter" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Status
+              </label>
+              <select
+                id="status-filter"
+                value={filters.status || ''}
+                onChange={(e) => handleFilterChange('status', e.target.value)}
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white"
+              >
+                <option value="">All</option>
+                <option value="pending_payment">Pending Payment</option>
+                <option value="paid">Paid</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="payment-status-filter" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Payment
+              </label>
+              <select
+                id="payment-status-filter"
+                value={filters.payment_status || ''}
+                onChange={(e) => handleFilterChange('payment_status', e.target.value)}
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white"
+              >
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+                <option value="refunded">Refunded</option>
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="shipping-status-filter" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Shipping
+              </label>
+              <select
+                id="shipping-status-filter"
+                value={filters.shipping_status || ''}
+                onChange={(e) => handleFilterChange('shipping_status', e.target.value)}
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white"
+              >
+                <option value="">All</option>
+                <option value="pending">Pending</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+              </select>
+            </div>
           </div>
 
-          <div className={styles.filterGroup}>
-            <label htmlFor="status-filter" className={styles.filterLabel}>Status:</label>
-            <select
-              id="status-filter"
-              value={filters.status || ''}
-              onChange={(e) => handleFilterChange('status', e.target.value)}
-              className={styles.select}
-            >
-              <option value="">All</option>
-              <option value="pending_payment">Pending Payment</option>
-              <option value="paid">Paid</option>
-              <option value="shipped">Shipped</option>
-              <option value="delivered">Delivered</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label htmlFor="payment-status-filter" className={styles.filterLabel}>Payment Status:</label>
-            <select
-              id="payment-status-filter"
-              value={filters.payment_status || ''}
-              onChange={(e) => handleFilterChange('payment_status', e.target.value)}
-              className={styles.select}
-            >
-              <option value="">All</option>
-              <option value="pending">Pending</option>
-              <option value="paid">Paid</option>
-              <option value="refunded">Refunded</option>
-            </select>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label htmlFor="shipping-status-filter" className={styles.filterLabel}>Shipping Status:</label>
-            <select
-              id="shipping-status-filter"
-              value={filters.shipping_status || ''}
-              onChange={(e) => handleFilterChange('shipping_status', e.target.value)}
-              className={styles.select}
-            >
-              <option value="">All</option>
-              <option value="pending">Pending</option>
-              <option value="shipped">Shipped</option>
-              <option value="delivered">Delivered</option>
-            </select>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label htmlFor="workflow-state-filter" className={styles.filterLabel}>Auction Workflow:</label>
+          <div className="mt-4">
+            <label htmlFor="workflow-state-filter" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Auction Workflow
+            </label>
             <select
               id="workflow-state-filter"
               value={filters.workflow_state || ''}
               onChange={(e) => handleFilterChange('workflow_state', e.target.value)}
-              className={styles.select}
+              className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white min-w-[200px]"
             >
               <option value="">All</option>
               <option value="active">Active Bidding</option>
@@ -222,120 +241,110 @@ export default function OrdersPage() {
             </select>
           </div>
         </div>
-      </Card>
 
-      {orders.length === 0 ? (
-        <Card variant="outlined" padding="md" className={styles.emptyCard}>
-          <p>No orders found.</p>
-        </Card>
-      ) : (
-        <div className={styles.ordersList}>
-          {orders.map((order) => (
-            <Card key={order.id} variant="outlined" padding="md" className={styles.orderCard}>
-              <div className={styles.orderHeader}>
-                <div>
-                  <Link href={`/orders/${order.id}`}>
-                    <h3 className={styles.orderTitle}>Order #{order.id}</h3>
-                  </Link>
-                  {order.auction && (
-                    <Link href={`/auctions/${order.auction.id}`}>
-                      <p className={styles.auctionTitle}>{order.auction.title}</p>
+        {/* Orders List */}
+        {orders.length === 0 ? (
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+            <p className="text-slate-500">No orders found.</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {orders.map((order) => (
+              <div key={order.id} className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-sm transition-shadow">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <Link href={`/orders/${order.id}`} className="text-base font-semibold text-primary-600 hover:text-primary-700 transition-colors">
+                      Order #{order.id}
                     </Link>
+                    {order.auction && (
+                      <Link href={`/auctions/${order.auction.id}`}>
+                        <p className="text-sm text-slate-500 mt-1 hover:text-primary-600 transition-colors">{order.auction.title}</p>
+                      </Link>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${getStatusClasses(order.status)}`}>
+                      {order.status}
+                    </span>
+                    {order.auction?.workflow_state && (
+                      <WorkflowStateBadge state={order.auction.workflow_state} size="sm" />
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="text-slate-500">Total</span>
+                    <p className="font-semibold text-slate-900">{formatCurrency(order.total_amount)}</p>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Payment</span>
+                    <p className="mt-0.5">
+                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${getStatusClasses(order.payment_status)}`}>
+                        {order.payment_status}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Shipping</span>
+                    <p className="mt-0.5">
+                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${getStatusClasses(order.shipping_status)}`}>
+                        {order.shipping_status}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Created</span>
+                    <p className="text-slate-700">{new Date(order.created_at).toLocaleDateString()}</p>
+                  </div>
+                  {order.buyer && (
+                    <div>
+                      <span className="text-slate-500">Buyer</span>
+                      <p className="text-slate-700">{order.buyer.name} ({order.buyer.email})</p>
+                    </div>
+                  )}
+                  {order.seller && (
+                    <div>
+                      <span className="text-slate-500">Seller</span>
+                      <p className="text-slate-700">{order.seller.name} ({order.seller.email})</p>
+                    </div>
+                  )}
+                  {order.tracking_url && (
+                    <div>
+                      <span className="text-slate-500">Tracking</span>
+                      <p>
+                        <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-700 transition-colors">
+                          View Tracking
+                        </a>
+                      </p>
+                    </div>
+                  )}
+                  {order.shipped_at && (
+                    <div>
+                      <span className="text-slate-500">Shipped</span>
+                      <p className="text-slate-700">{new Date(order.shipped_at).toLocaleDateString()}</p>
+                    </div>
+                  )}
+                  {order.completed_at && (
+                    <div>
+                      <span className="text-slate-500">Completed</span>
+                      <p className="text-slate-700">{new Date(order.completed_at).toLocaleDateString()}</p>
+                    </div>
                   )}
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-2)', alignItems: 'flex-end' }}>
-                  <Badge variant={getStatusBadgeVariant(order.status)} size="md">
-                    {order.status}
-                  </Badge>
-                  {order.auction?.workflow_state && (
-                    <WorkflowStateBadge state={order.auction.workflow_state} size="sm" />
-                  )}
-                </div>
-              </div>
 
-              <div className={styles.orderDetails}>
-                <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>Total:</span>
-                  <span className={styles.detailValue}>{formatCurrency(order.total_amount)}</span>
+                <div className="mt-4 pt-4 border-t border-slate-100">
+                  <Link href={`/orders/${order.id}`}>
+                    <button className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                      View Details
+                    </button>
+                  </Link>
                 </div>
-                <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>Payment:</span>
-                  <Badge variant={getStatusBadgeVariant(order.payment_status)} size="sm">
-                    {order.payment_status}
-                  </Badge>
-                </div>
-                <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>Shipping:</span>
-                  <Badge variant={getStatusBadgeVariant(order.shipping_status)} size="sm">
-                    {order.shipping_status}
-                  </Badge>
-                </div>
-                {order.auction?.workflow_state && (
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>Auction Workflow:</span>
-                    <WorkflowStateBadge state={order.auction.workflow_state} size="sm" />
-                  </div>
-                )}
-                {order.buyer && (
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>Buyer:</span>
-                    <span className={styles.detailValue}>{order.buyer.name} ({order.buyer.email})</span>
-                  </div>
-                )}
-                {order.seller && (
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>Seller:</span>
-                    <span className={styles.detailValue}>{order.seller.name} ({order.seller.email})</span>
-                  </div>
-                )}
-                <div className={styles.detailRow}>
-                  <span className={styles.detailLabel}>Created:</span>
-                  <span className={styles.detailValue}>
-                    {new Date(order.created_at).toLocaleString()}
-                  </span>
-                </div>
-                {order.tracking_url && (
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>Tracking:</span>
-                    <a 
-                      href={order.tracking_url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className={styles.trackingLink}
-                    >
-                      View Tracking
-                    </a>
-                  </div>
-                )}
-                {order.shipped_at && (
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>Shipped:</span>
-                    <span className={styles.detailValue}>
-                      {new Date(order.shipped_at).toLocaleString()}
-                    </span>
-                  </div>
-                )}
-                {order.completed_at && (
-                  <div className={styles.detailRow}>
-                    <span className={styles.detailLabel}>Completed:</span>
-                    <span className={styles.detailValue}>
-                      {new Date(order.completed_at).toLocaleString()}
-                    </span>
-                  </div>
-                )}
               </div>
-
-              <div className={styles.orderActions}>
-                <Link href={`/orders/${order.id}`}>
-                  <Button variant="secondary" size="sm">
-                    View Details
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

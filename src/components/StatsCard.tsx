@@ -1,6 +1,3 @@
-import { Card, CardContent } from '@design-system/components';
-import styles from './StatsCard.module.css';
-
 interface StatsCardProps {
   title: string;
   value: number | string;
@@ -10,22 +7,21 @@ interface StatsCardProps {
 
 export default function StatsCard({ title, value, subtitle, icon }: StatsCardProps) {
   return (
-    <Card variant="elevated" padding="md">
-      <CardContent>
-        <div className={styles.content}>
-          <div className={styles.textContent}>
-            <p className={styles.title}>{title}</p>
-            <p className={styles.value}>{value}</p>
-            {subtitle && (
-              <p className={styles.subtitle}>{subtitle}</p>
-            )}
-          </div>
-          {icon && (
-            <div className={styles.icon}>{icon}</div>
+    <div className="bg-white rounded-xl border border-slate-200 p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-slate-500">{title}</p>
+          <p className="mt-2 text-3xl font-bold text-slate-900">{value}</p>
+          {subtitle && (
+            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
           )}
         </div>
-      </CardContent>
-    </Card>
+        {icon && (
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 text-2xl">
+            {icon}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
-

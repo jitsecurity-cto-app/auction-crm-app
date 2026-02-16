@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { User } from '../types';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, Badge, Button } from '@design-system/components';
 import { formatDateTime } from '@design-system/utils';
 
 interface UserTableProps {
@@ -12,60 +11,70 @@ interface UserTableProps {
 
 export default function UserTable({ users, onDelete }: UserTableProps) {
   return (
-    <Table striped hoverable>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Password Hash</TableHead>
-          <TableHead>Created</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {users.length === 0 ? (
-          <TableRow>
-            <TableCell colSpan={6} style={{ textAlign: 'center', padding: '3rem' }}>
-              No users found
-            </TableCell>
-          </TableRow>
-        ) : (
-          users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell style={{ fontWeight: 'var(--font-weight-medium)' }}>
-                {user.name}
-              </TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>
-                <Badge variant={user.role === 'admin' ? 'info' : 'default'} size="sm">
-                  {user.role}
-                </Badge>
-              </TableCell>
-              <TableCell style={{ fontSize: 'var(--font-size-xs)', fontFamily: 'var(--font-family-mono)' }}>
-                {/* Intentionally display password hash (security vulnerability) */}
-                {user.password_hash ? user.password_hash.substring(0, 20) + '...' : 'N/A'}
-              </TableCell>
-              <TableCell>{formatDateTime(user.created_at)}</TableCell>
-              <TableCell>
-                <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-                  <Link href={`/users/${user.id}`}>
-                    <Button variant="primary" size="sm">
-                      Edit
-                    </Button>
-                  </Link>
-                  {onDelete && (
-                    <Button variant="danger" size="sm" onClick={() => onDelete(user.id)}>
-                      Delete
-                    </Button>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-slate-200 bg-slate-50/50">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Password Hash</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Created</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-12 text-center text-sm text-slate-500">
+                  No users found
+                </td>
+              </tr>
+            ) : (
+              users.map((user) => (
+                <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="px-6 py-4 text-sm font-medium text-slate-900">
+                    {user.name}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-700">{user.email}</td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${
+                      user.role === 'admin'
+                        ? 'bg-blue-50 text-blue-700 ring-blue-600/20'
+                        : 'bg-slate-50 text-slate-700 ring-slate-600/20'
+                    }`}>
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-xs font-mono text-slate-500">
+                    {/* Intentionally display password hash (security vulnerability) */}
+                    {user.password_hash ? user.password_hash.substring(0, 20) + '...' : 'N/A'}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-500">{formatDateTime(user.created_at)}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <Link href={`/users/${user.id}`}>
+                        <button className="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium text-primary-600 hover:bg-primary-50 transition-colors">
+                          Edit
+                        </button>
+                      </Link>
+                      {onDelete && (
+                        <button
+                          onClick={() => onDelete(user.id)}
+                          className="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
-

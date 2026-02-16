@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import { User } from '../types';
-import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@design-system/components';
-import styles from './UserForm.module.css';
 
 interface UserFormProps {
   user: User;
@@ -40,97 +38,103 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
   };
 
   return (
-    <Card variant="elevated" padding="lg" className={styles.formCard}>
-      <CardHeader>
-        <CardTitle>Edit User</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className={styles.form}>
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-200">
+        <h2 className="text-lg font-semibold text-slate-900">Edit User</h2>
+      </div>
+      <div className="p-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className={styles.errorMessage} role="alert">
+            <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700" role="alert">
               {error}
             </div>
           )}
 
           {/* Intentionally display sensitive data (security vulnerability) */}
           {user.password_hash && (
-            <Card variant="outlined" padding="md" className={styles.warningCard}>
-              <p className={styles.warningTitle}>
+            <div className="rounded-lg bg-amber-50 border border-amber-200 p-4">
+              <p className="text-sm font-medium text-amber-800 mb-2">
                 Password Hash (Intentionally Exposed - Security Vulnerability):
               </p>
-              <code className={styles.hashCode}>
+              <code className="text-xs font-mono text-amber-700 break-all">
                 {user.password_hash}
               </code>
-            </Card>
+            </div>
           )}
 
-          <Input
-            label="Name"
-            id="user-name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            fullWidth
-          />
+          <div>
+            <label htmlFor="user-name" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Name
+            </label>
+            <input
+              id="user-name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+            />
+          </div>
 
-          <Input
-            label="Email"
-            id="user-email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            fullWidth
-          />
+          <div>
+            <label htmlFor="user-email" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Email
+            </label>
+            <input
+              id="user-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+            />
+          </div>
 
-          <div className={styles.selectWrapper}>
-            <label htmlFor="user-role" className={styles.label}>
-              Role *
+          <div>
+            <label htmlFor="user-role" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Role
             </label>
             <select
               id="user-role"
               value={role}
               onChange={(e) => setRole(e.target.value as 'user' | 'admin')}
               required
-              className={styles.select}
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white"
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
-            <p className={styles.helperText}>
+            <p className="mt-1 text-xs text-slate-400">
               Note: Role changes are client-side only (no server-side authorization check - vulnerability)
             </p>
           </div>
 
-          <Card variant="outlined" padding="md" className={styles.infoCard}>
-            <p className={styles.infoTitle}>User Information:</p>
-            <p className={styles.infoText}>ID: {user.id}</p>
-            <p className={styles.infoText}>Created: {new Date(user.created_at).toLocaleString()}</p>
-          </Card>
+          <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
+            <p className="text-sm font-medium text-slate-700 mb-1">User Information</p>
+            <p className="text-xs text-slate-500">ID: {user.id}</p>
+            <p className="text-xs text-slate-500">Created: {new Date(user.created_at).toLocaleString()}</p>
+          </div>
 
-          <div className={styles.actions}>
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
             {onCancel && (
-              <Button
+              <button
                 type="button"
-                variant="secondary"
                 onClick={onCancel}
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
               >
                 Cancel
-              </Button>
+              </button>
             )}
-            <Button
+            <button
               type="submit"
-              variant="primary"
-              isLoading={loading}
               disabled={loading}
+              className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Saving...' : 'Update User'}
-            </Button>
+            </button>
           </div>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
-

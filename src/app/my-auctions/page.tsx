@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import { getAuthUser, isAuthenticated } from '@/lib/auth';
 import { api } from '@/lib/api';
 import Link from 'next/link';
-import { Button, Card, Badge } from '@design-system/components';
-import styles from './page.module.css';
 
 export default function MyAuctionsPage() {
   const [auctions, setAuctions] = useState<any[]>([]);
@@ -36,12 +34,16 @@ export default function MyAuctionsPage() {
 
   if (!isAuthenticated() || !user) {
     return (
-      <div className={styles.container}>
-        <h1 className={styles.title}>My Auctions</h1>
-        <p className={styles.message}>You must be logged in to view your auctions.</p>
-        <div className={styles.actions}>
+      <div>
+        <div className="border-b border-slate-200 bg-white px-8 py-6">
+          <h1 className="text-2xl font-bold text-slate-900">My Auctions</h1>
+        </div>
+        <div className="p-8">
+          <p className="text-slate-500 mb-4">You must be logged in to view your auctions.</p>
           <Link href="/login">
-            <Button variant="primary">Login</Button>
+            <button className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 transition-colors">
+              Login
+            </button>
           </Link>
         </div>
       </div>
@@ -50,84 +52,101 @@ export default function MyAuctionsPage() {
 
   if (loading) {
     return (
-      <div className={styles.container}>
-        <p>Loading...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600 mx-auto mb-4"></div>
+          <p className="text-slate-500">Loading...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={styles.container}>
-        <h1 className={styles.title}>My Auctions</h1>
-        <p className={styles.error}>Error: {error}</p>
+      <div>
+        <div className="border-b border-slate-200 bg-white px-8 py-6">
+          <h1 className="text-2xl font-bold text-slate-900">My Auctions</h1>
+        </div>
+        <div className="p-8">
+          <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+            Error: {error}
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>My Auctions</h1>
-      <div className={styles.actions}>
-        <Link href="/auctions/new">
-          <Button variant="primary">Create New Auction</Button>
-        </Link>
-      </div>
-      {auctions.length === 0 ? (
-        <Card variant="outlined" padding="md">
-          <p>You haven't created any auctions yet.</p>
+    <div>
+      <div className="border-b border-slate-200 bg-white px-8 py-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-slate-900">My Auctions</h1>
           <Link href="/auctions/new">
-            <Button variant="primary">Create Your First Auction</Button>
+            <button className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 transition-colors">
+              Create New Auction
+            </button>
           </Link>
-        </Card>
-      ) : (
-        <div className={styles.auctionsList}>
-          {auctions.map((auction) => (
-            <Card key={auction.id} variant="outlined" padding="md" className={styles.auctionCard}>
-              <div className={styles.auctionHeader}>
-                <h3>
-                  <Link href={`/auctions/${auction.id}`}>
+        </div>
+      </div>
+
+      <div className="p-8">
+        {auctions.length === 0 ? (
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
+            <p className="text-slate-500 mb-4">You haven&apos;t created any auctions yet.</p>
+            <Link href="/auctions/new">
+              <button className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 transition-colors">
+                Create Your First Auction
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {auctions.map((auction) => (
+              <div key={auction.id} className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-sm transition-shadow">
+                <div className="flex items-start justify-between mb-3">
+                  <Link href={`/auctions/${auction.id}`} className="text-base font-semibold text-primary-600 hover:text-primary-700 transition-colors">
                     {auction.title}
                   </Link>
-                </h3>
-                <Badge 
-                  variant={auction.status === 'active' ? 'success' : auction.status === 'completed' ? 'info' : 'default'} 
-                  size="sm"
-                >
-                  {auction.status}
-                </Badge>
-              </div>
-              <p className={styles.auctionDescription}>
-                {auction.description || 'No description'}
-              </p>
-              <div className={styles.auctionMeta}>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Starting Price:</span>
-                  <span className={styles.metaValue}>${parseFloat(auction.starting_price).toFixed(2)}</span>
-                </div>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Current Bid:</span>
-                  <span className={styles.metaValue}>
-                    ${auction.highest_bid ? parseFloat(auction.highest_bid).toFixed(2) : parseFloat(auction.starting_price).toFixed(2)}
+                  <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${
+                    auction.status === 'active'
+                      ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20'
+                      : auction.status === 'completed'
+                      ? 'bg-blue-50 text-blue-700 ring-blue-600/20'
+                      : 'bg-slate-50 text-slate-700 ring-slate-600/20'
+                  }`}>
+                    {auction.status}
                   </span>
                 </div>
-                <div className={styles.metaItem}>
-                  <span className={styles.metaLabel}>Bids:</span>
-                  <span className={styles.metaValue}>{auction.bid_count || 0}</span>
+                <p className="text-sm text-slate-500 mb-4">{auction.description || 'No description'}</p>
+                <div className="grid grid-cols-3 gap-4 text-sm mb-4">
+                  <div>
+                    <span className="text-slate-500">Starting Price</span>
+                    <p className="font-medium text-slate-900">${parseFloat(auction.starting_price).toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Current Bid</span>
+                    <p className="font-medium text-slate-900">
+                      ${auction.highest_bid ? parseFloat(auction.highest_bid).toFixed(2) : parseFloat(auction.starting_price).toFixed(2)}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-slate-500">Bids</span>
+                    <p className="font-medium text-slate-900">{auction.bid_count || 0}</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                  <span className="text-xs text-slate-400">Ends: {new Date(auction.end_time).toLocaleString()}</span>
+                  <Link href={`/auctions/${auction.id}`}>
+                    <button className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                      View Details
+                    </button>
+                  </Link>
                 </div>
               </div>
-              <div className={styles.auctionFooter}>
-                <span className={styles.endTime}>
-                  Ends: {new Date(auction.end_time).toLocaleString()}
-                </span>
-                <Link href={`/auctions/${auction.id}`}>
-                  <Button variant="secondary" size="sm">View Details</Button>
-                </Link>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

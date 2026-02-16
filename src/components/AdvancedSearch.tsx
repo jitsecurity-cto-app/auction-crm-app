@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Input, Button } from '@design-system/components';
-import styles from './AdvancedSearch.module.css';
 
 interface AdvancedSearchProps {
   onSearch: (filters: {
@@ -22,7 +20,7 @@ export default function AdvancedSearch({ onSearch, onClear }: AdvancedSearchProp
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // No input validation (intentional vulnerability)
     // No sanitization of search input (XSS vulnerability)
     const filters: {
@@ -31,7 +29,7 @@ export default function AdvancedSearch({ onSearch, onClear }: AdvancedSearchProp
       minPrice?: number;
       maxPrice?: number;
     } = {};
-    
+
     if (search.trim()) {
       filters.search = search.trim();
     }
@@ -44,7 +42,7 @@ export default function AdvancedSearch({ onSearch, onClear }: AdvancedSearchProp
     if (maxPrice) {
       filters.maxPrice = parseFloat(maxPrice);
     }
-    
+
     onSearch(filters);
   };
 
@@ -57,75 +55,90 @@ export default function AdvancedSearch({ onSearch, onClear }: AdvancedSearchProp
   };
 
   return (
-    <Card variant="outlined" padding="md" className={styles.container}>
-      <CardHeader>
-        <CardTitle>Advanced Search</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.row}>
-            <Input
+    <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <h3 className="text-sm font-semibold text-slate-900 mb-4">Search & Filters</h3>
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+          <div className="lg:col-span-2">
+            <label htmlFor="search" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Search
+            </label>
+            <input
               id="search"
-              label="Search"
               type="text"
               placeholder="Search by title or description..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              fullWidth
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
             />
-            
-            <div className={styles.field}>
-              <label htmlFor="status" className={styles.label}>Status:</label>
-              <select
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className={styles.select}
-              >
-                <option value="">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="ended">Ended</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
           </div>
 
-          <div className={styles.row}>
-            <Input
+          <div>
+            <label htmlFor="status" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Status
+            </label>
+            <select
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white"
+            >
+              <option value="">All Statuses</option>
+              <option value="active">Active</option>
+              <option value="ended">Ended</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="minPrice" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Min Price
+            </label>
+            <input
               id="minPrice"
-              label="Min Price"
               type="number"
               placeholder="0.00"
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
               step="0.01"
               min="0"
-              fullWidth
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
             />
-            
-            <Input
+          </div>
+
+          <div>
+            <label htmlFor="maxPrice" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Max Price
+            </label>
+            <input
               id="maxPrice"
-              label="Max Price"
               type="number"
               placeholder="10000.00"
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
               step="0.01"
               min="0"
-              fullWidth
+              className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
             />
           </div>
+        </div>
 
-          <div className={styles.actions}>
-            <Button type="submit" variant="primary">
-              Search
-            </Button>
-            <Button type="button" variant="secondary" onClick={handleClear}>
-              Clear
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+        <div className="flex items-center gap-3 mt-4">
+          <button
+            type="submit"
+            className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 transition-colors"
+          >
+            Search
+          </button>
+          <button
+            type="button"
+            onClick={handleClear}
+            className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+          >
+            Clear
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

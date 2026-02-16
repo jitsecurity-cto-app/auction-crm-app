@@ -2,16 +2,6 @@
 
 import Link from 'next/link';
 import { Auction } from '../types';
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-  Badge,
-  Button,
-} from '@design-system/components';
 import { formatCurrency, formatDateTime } from '@design-system/utils';
 import WorkflowStateBadge from './WorkflowStateBadge';
 
@@ -21,84 +11,86 @@ interface AuctionTableProps {
 }
 
 export default function AuctionTable({ auctions, onDelete }: AuctionTableProps) {
-  const getStatusVariant = (status: string): 'success' | 'error' | 'default' => {
+  const getStatusClasses = (status: string): string => {
     switch (status) {
       case 'active':
-        return 'success';
+        return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
       case 'cancelled':
-        return 'error';
+        return 'bg-red-50 text-red-700 ring-red-600/20';
       default:
-        return 'default';
+        return 'bg-slate-50 text-slate-700 ring-slate-600/20';
     }
   };
 
   return (
-    <Table striped hoverable>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Title</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Workflow State</TableHead>
-          <TableHead>Starting Price</TableHead>
-          <TableHead>Current Bid</TableHead>
-          <TableHead>End Time</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {auctions.length === 0 ? (
-          <TableRow>
-            <TableCell colSpan={7} style={{ textAlign: 'center', padding: '3rem' }}>
-              No auctions found
-            </TableCell>
-          </TableRow>
-        ) : (
-          auctions.map((auction) => (
-            <TableRow key={auction.id}>
-              <TableCell>
-                <Link
-                  href={`/auctions/${auction.id}`}
-                  style={{
-                    color: 'var(--accent-primary)',
-                    textDecoration: 'none',
-                    fontWeight: 'var(--font-weight-medium)',
-                  }}
-                >
-                  {auction.title}
-                </Link>
-              </TableCell>
-              <TableCell>
-                <Badge variant={getStatusVariant(auction.status)} size="sm">
-                  {auction.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <WorkflowStateBadge state={auction.workflow_state} size="sm" />
-              </TableCell>
-              <TableCell>{formatCurrency(auction.starting_price)}</TableCell>
-              <TableCell style={{ fontWeight: 'var(--font-weight-medium)' }}>
-                {formatCurrency(auction.current_bid || auction.starting_price)}
-              </TableCell>
-              <TableCell>{formatDateTime(auction.end_time)}</TableCell>
-              <TableCell>
-                <div style={{ display: 'flex', gap: 'var(--spacing-2)' }}>
-                  <Link href={`/auctions/${auction.id}`}>
-                    <Button variant="primary" size="sm">
-                      Edit
-                    </Button>
-                  </Link>
-                  {onDelete && (
-                    <Button variant="danger" size="sm" onClick={() => onDelete(auction.id)}>
-                      Delete
-                    </Button>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
-    </Table>
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-slate-200 bg-slate-50/50">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Title</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Workflow</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Starting Price</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Current Bid</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">End Time</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            {auctions.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-6 py-12 text-center text-sm text-slate-500">
+                  No auctions found
+                </td>
+              </tr>
+            ) : (
+              auctions.map((auction) => (
+                <tr key={auction.id} className="hover:bg-slate-50/50 transition-colors">
+                  <td className="px-6 py-4">
+                    <Link
+                      href={`/auctions/${auction.id}`}
+                      className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
+                    >
+                      {auction.title}
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${getStatusClasses(auction.status)}`}>
+                      {auction.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <WorkflowStateBadge state={auction.workflow_state} size="sm" />
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-700">{formatCurrency(auction.starting_price)}</td>
+                  <td className="px-6 py-4 text-sm font-medium text-slate-900">
+                    {formatCurrency(auction.current_bid || auction.starting_price)}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-slate-500">{formatDateTime(auction.end_time)}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <Link href={`/auctions/${auction.id}`}>
+                        <button className="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium text-primary-600 hover:bg-primary-50 transition-colors">
+                          Edit
+                        </button>
+                      </Link>
+                      {onDelete && (
+                        <button
+                          onClick={() => onDelete(auction.id)}
+                          className="inline-flex items-center rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
-

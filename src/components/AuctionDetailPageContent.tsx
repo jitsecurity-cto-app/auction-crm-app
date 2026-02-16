@@ -8,8 +8,7 @@ import { Auction } from '../types';
 import AuctionForm from './AuctionForm';
 import WorkflowVisualization from './WorkflowVisualization';
 import WorkflowStateBadge from './WorkflowStateBadge';
-import { Card, CardHeader, CardTitle, CardContent, Button, Badge } from '@design-system/components';
-import { formatCurrency, formatDateTime } from '@design-system/utils';
+import { formatCurrency } from '@design-system/utils';
 
 interface AuctionDetailPageContentProps {
   id: string;
@@ -51,7 +50,7 @@ export default function AuctionDetailPageContent({ id }: AuctionDetailPageConten
 
   const handleWorkflowStateChange = async (newState: string) => {
     if (!id || !newState) return;
-    
+
     try {
       setUpdatingWorkflow(true);
       await api.updateWorkflowState(id, newState);
@@ -77,16 +76,19 @@ export default function AuctionDetailPageContent({ id }: AuctionDetailPageConten
 
   if (loading) {
     return (
-      <div style={{ padding: 'var(--spacing-8)', textAlign: 'center', color: 'var(--text-secondary)' }}>
-        <p>Loading auction...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600 mx-auto mb-4"></div>
+          <p className="text-slate-500">Loading auction...</p>
+        </div>
       </div>
     );
   }
 
   if (!auction) {
     return (
-      <div style={{ padding: 'var(--spacing-8)', textAlign: 'center', color: 'var(--text-secondary)' }}>
-        <p>Auction not found</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-slate-500">Auction not found</p>
       </div>
     );
   }
@@ -99,67 +101,62 @@ export default function AuctionDetailPageContent({ id }: AuctionDetailPageConten
   ];
 
   return (
-    <div style={{ padding: 'var(--spacing-8)' }}>
-      <div style={{ marginBottom: 'var(--spacing-6)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-4)' }}>
-          <h1 style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 'var(--font-weight-bold)' }}>
-            Auction Details
-          </h1>
-          <Button variant="secondary" size="sm" onClick={() => router.push('/auctions')}>
-            ← Back to Auctions
-          </Button>
-        </div>
-
-        {auction && (
-          <Card variant="outlined" padding="md" style={{ marginBottom: 'var(--spacing-4)' }}>
-            <div style={{ display: 'flex', gap: 'var(--spacing-4)', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div>
-                <h2 style={{ fontSize: 'var(--font-size-xl)', marginBottom: 'var(--spacing-2)' }}>
-                  {auction.title}
-                </h2>
-                <div style={{ display: 'flex', gap: 'var(--spacing-2)', alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Badge variant={auction.status === 'active' ? 'success' : 'default'} size="sm">
-                    {auction.status}
-                  </Badge>
-                  <WorkflowStateBadge state={auction.workflow_state} size="sm" />
-                  <span style={{ color: 'var(--text-secondary)' }}>
-                    {formatCurrency(auction.current_bid || auction.starting_price)}
-                  </span>
-                </div>
-              </div>
+    <div>
+      {/* Page Header */}
+      <div className="border-b border-slate-200 bg-white px-8 py-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <button
+                onClick={() => router.push('/auctions')}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+              </button>
+              <h1 className="text-2xl font-bold text-slate-900">Auction Details</h1>
             </div>
-          </Card>
-        )}
+            <div className="flex items-center gap-3">
+              <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
+                auction.status === 'active' ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-slate-50 text-slate-700 ring-slate-600/20'
+              }`}>
+                {auction.status}
+              </span>
+              <WorkflowStateBadge state={auction.workflow_state} size="sm" />
+              <span className="text-sm text-slate-500">{formatCurrency(auction.current_bid || auction.starting_price)}</span>
+            </div>
+          </div>
+          <button
+            onClick={() => router.push('/auctions')}
+            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+          >
+            Back to Auctions
+          </button>
+        </div>
+      </div>
 
+      <div className="p-8 space-y-6">
+        {/* Workflow State */}
         {auction?.workflow_state && (
-          <Card variant="outlined" padding="md" style={{ marginBottom: 'var(--spacing-4)' }}>
-            <CardHeader>
-              <CardTitle>Workflow State</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div style={{ marginBottom: 'var(--spacing-4)' }}>
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200">
+              <h3 className="text-base font-semibold text-slate-900">Workflow State</h3>
+            </div>
+            <div className="p-6">
+              <div className="mb-6">
                 <WorkflowVisualization currentState={auction.workflow_state as any} />
               </div>
-              <div>
-                <label htmlFor="workflow-state-select" style={{ 
-                  display: 'block', 
-                  marginBottom: 'var(--spacing-2)',
-                  fontWeight: 'var(--font-weight-medium)'
-                }}>
+              <div className="border-t border-slate-200 pt-4">
+                <label htmlFor="workflow-state-select" className="block text-sm font-medium text-slate-700 mb-2">
                   Admin Override - Change Workflow State:
                 </label>
-                <div style={{ display: 'flex', gap: 'var(--spacing-2)', alignItems: 'center' }}>
+                <div className="flex items-center gap-3">
                   <select
                     id="workflow-state-select"
                     value={workflowState}
                     onChange={(e) => setWorkflowState(e.target.value)}
-                    style={{
-                      padding: 'var(--spacing-2) var(--spacing-3)',
-                      border: '1px solid var(--border-primary)',
-                      borderRadius: 'var(--radius-md)',
-                      fontSize: 'var(--font-size-base)',
-                      minWidth: '200px'
-                    }}
+                    className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white min-w-[200px]"
                   >
                     {workflowStates.map((state) => (
                       <option key={state.value} value={state.value}>
@@ -167,27 +164,26 @@ export default function AuctionDetailPageContent({ id }: AuctionDetailPageConten
                       </option>
                     ))}
                   </select>
-                  <Button
-                    variant="primary"
-                    size="sm"
+                  <button
                     onClick={() => handleWorkflowStateChange(workflowState)}
                     disabled={updatingWorkflow || workflowState === auction.workflow_state}
-                    isLoading={updatingWorkflow}
+                    className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Update State
-                  </Button>
+                    {updatingWorkflow ? 'Updating...' : 'Update State'}
+                  </button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
-      </div>
 
-      <AuctionForm
-        auction={auction}
-        onSubmit={handleSubmit}
-        onCancel={() => router.push('/auctions')}
-      />
+        {/* Edit Form */}
+        <AuctionForm
+          auction={auction}
+          onSubmit={handleSubmit}
+          onCancel={() => router.push('/auctions')}
+        />
+      </div>
     </div>
   );
 }

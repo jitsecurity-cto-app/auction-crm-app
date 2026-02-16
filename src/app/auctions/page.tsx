@@ -9,8 +9,6 @@ import { Auction } from '../../types';
 import AuctionTable from '../../components/AuctionTable';
 import AdvancedSearch from '../../components/AdvancedSearch';
 import WorkflowStateFilter from '../../components/WorkflowStateFilter';
-import { Button, Card } from '@design-system/components';
-import styles from './page.module.css';
 
 export default function AuctionsPage() {
   const router = useRouter();
@@ -37,7 +35,7 @@ export default function AuctionsPage() {
     try {
       setLoading(true);
       const activeFilters = filters || searchFilters;
-      
+
       // If workflow_state filter is set, use the workflow endpoint
       if (activeFilters.workflow_state) {
         const response = await api.getAuctionsByWorkflow({
@@ -84,31 +82,45 @@ export default function AuctionsPage() {
 
   if (loading) {
     return (
-      <div className={styles.loading}>
-        <p>Loading auctions...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600 mx-auto mb-4"></div>
+          <p className="text-slate-500">Loading auctions...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>Auction Management</h1>
-        <Link href="/auctions/new">
-          <Button variant="primary" size="lg">+ Create New Auction</Button>
-        </Link>
+    <div>
+      {/* Page Header */}
+      <div className="border-b border-slate-200 bg-white px-8 py-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Auction Management</h1>
+            <p className="text-slate-500 mt-1">Manage all auctions on the platform</p>
+          </div>
+          <Link href="/auctions/new">
+            <button className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 transition-colors flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-4 w-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Create Auction
+            </button>
+          </Link>
+        </div>
       </div>
 
-      {error && (
-        <Card variant="outlined" padding="md" className={styles.errorCard}>
-          <p className={styles.errorText}>{error}</p>
-        </Card>
-      )}
+      <div className="p-8">
+        {error && (
+          <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700 mb-6">
+            {error}
+          </div>
+        )}
 
-      <AdvancedSearch onSearch={handleSearch} onClear={handleClear} />
+        <AdvancedSearch onSearch={handleSearch} onClear={handleClear} />
 
-      <Card variant="outlined" padding="md" style={{ marginBottom: 'var(--spacing-4)' }}>
-        <div style={{ display: 'flex', gap: 'var(--spacing-4)', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
           <WorkflowStateFilter
             value={searchFilters.workflow_state || ''}
             onChange={(value) => {
@@ -118,10 +130,9 @@ export default function AuctionsPage() {
             }}
           />
         </div>
-      </Card>
 
-      <AuctionTable auctions={auctions} onDelete={handleDelete} />
+        <AuctionTable auctions={auctions} onDelete={handleDelete} />
+      </div>
     </div>
   );
 }
-

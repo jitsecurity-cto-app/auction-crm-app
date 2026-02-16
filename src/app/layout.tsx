@@ -1,8 +1,5 @@
-import Navbar from '../components/Navbar';
+import AppShell from '../components/AppShell';
 import './globals.css';
-// Import design system theme CSS directly
-import '../../../design-system/src/theme/reset.css';
-import '../../../design-system/src/theme/theme.css';
 
 export const metadata = {
   title: 'Auction Platform - CRM',
@@ -16,11 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <Navbar />
-        {children}
+      <body className="min-h-screen bg-slate-100">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
 }
-

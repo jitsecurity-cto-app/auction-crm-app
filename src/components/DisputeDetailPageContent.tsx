@@ -6,9 +6,7 @@ import Link from 'next/link';
 import { isAuthenticated } from '../lib/auth';
 import { api } from '../lib/api';
 import { Dispute } from '../types';
-import { Button, Card, CardHeader, CardTitle, CardContent, Badge, Textarea, Input } from '@design-system/components';
 import { formatDateTime } from '@design-system/utils';
-import styles from '../app/disputes/[id]/page.module.css';
 
 interface DisputeDetailPageContentProps {
   id: string;
@@ -84,25 +82,26 @@ export default function DisputeDetailPageContent({ id }: DisputeDetailPageConten
     }
   };
 
-  const getStatusVariant = (status: string) => {
-    switch (status) {
+  const getStatusClasses = (s: string): string => {
+    switch (s) {
       case 'resolved':
       case 'closed':
-        return 'success';
+        return 'bg-emerald-50 text-emerald-700 ring-emerald-600/20';
       case 'open':
-        return 'error';
+        return 'bg-red-50 text-red-700 ring-red-600/20';
       case 'in_review':
-        return 'warning';
+        return 'bg-amber-50 text-amber-700 ring-amber-600/20';
       default:
-        return 'default';
+        return 'bg-slate-50 text-slate-700 ring-slate-600/20';
     }
   };
 
   if (loading) {
     return (
-      <div className={styles.container}>
-        <div className={styles.loading}>
-          <p>Loading dispute...</p>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600 mx-auto mb-4"></div>
+          <p className="text-slate-500">Loading dispute...</p>
         </div>
       </div>
     );
@@ -110,171 +109,186 @@ export default function DisputeDetailPageContent({ id }: DisputeDetailPageConten
 
   if (error && !dispute) {
     return (
-      <div className={styles.container}>
-        <div className={styles.error}>
-          <p>Error: {error}</p>
-          <Button variant="primary" onClick={fetchDispute}>
-            Retry
-          </Button>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <p className="text-red-600">Error: {error}</p>
+        <button onClick={fetchDispute} className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 transition-colors">
+          Retry
+        </button>
       </div>
     );
   }
 
   if (!dispute) {
     return (
-      <div className={styles.container}>
-        <div className={styles.notFound}>
-          <p>Dispute not found.</p>
-          <Link href="/disputes">
-            <Button variant="primary">Back to Disputes</Button>
-          </Link>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <p className="text-slate-500">Dispute not found.</p>
+        <Link href="/disputes">
+          <button className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 transition-colors">
+            Back to Disputes
+          </button>
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <Link href="/disputes">
-          <Button variant="secondary" size="sm">
-            ← Back to Disputes
-          </Button>
-        </Link>
-        <h1 className={styles.title}>Dispute #{String(dispute.id).slice(0, 8)}</h1>
-        <Badge variant={getStatusVariant(dispute.status)} size="lg">
-          {dispute.status}
-        </Badge>
+    <div>
+      {/* Page Header */}
+      <div className="border-b border-slate-200 bg-white px-8 py-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <Link href="/disputes" className="text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+              </Link>
+              <h1 className="text-2xl font-bold text-slate-900">Dispute #{String(dispute.id).slice(0, 8)}</h1>
+            </div>
+            <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${getStatusClasses(dispute.status)}`}>
+              {dispute.status}
+            </span>
+          </div>
+          <Link href="/disputes">
+            <button className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+              Back to Disputes
+            </button>
+          </Link>
+        </div>
       </div>
 
       {error && (
-        <Card variant="outlined" padding="md" className={styles.errorCard}>
-          <p>{error}</p>
-        </Card>
+        <div className="mx-8 mt-6 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
+          {error}
+        </div>
       )}
 
-      <div className={styles.content}>
-        <div className={styles.mainSection}>
-          {dispute.auction && (
-            <Card variant="outlined" padding="md" className={styles.section}>
-              <h2 className={styles.sectionTitle}>Auction Details</h2>
-              <Link href={`/auctions/${dispute.auction.id}`}>
-                <h3 className={styles.auctionTitle}>{dispute.auction.title}</h3>
-              </Link>
-              <p className={styles.auctionDescription}>{dispute.auction.description}</p>
-            </Card>
-          )}
+      <div className="p-8 space-y-6">
+        {/* Auction Details */}
+        {dispute.auction && (
+          <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <h3 className="text-base font-semibold text-slate-900 mb-4">Auction Details</h3>
+            <Link href={`/auctions/${dispute.auction.id}`} className="text-lg font-medium text-primary-600 hover:text-primary-700 transition-colors">
+              {dispute.auction.title}
+            </Link>
+            <p className="text-sm text-slate-500 mt-2">{dispute.auction.description}</p>
+          </div>
+        )}
 
-          <Card variant="outlined" padding="md" className={styles.section}>
-            <h2 className={styles.sectionTitle}>Dispute Information</h2>
-            <div className={styles.infoGrid}>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Filed By:</span>
-                <span className={styles.infoValue}>
-                  {dispute.filer ? (
-                    <Link href={`/users/${dispute.filed_by}`}>
-                      {dispute.filer.name || dispute.filer.email}
-                    </Link>
-                  ) : (
-                    `User ${String(dispute.filed_by).slice(0, 8)}`
-                  )}
-                </span>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Role:</span>
-                <Badge variant={dispute.filed_by_role === 'seller' ? 'info' : 'default'} size="sm">
-                  {dispute.filed_by_role}
-                </Badge>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Status:</span>
-                <Badge variant={getStatusVariant(dispute.status)} size="sm">
-                  {dispute.status}
-                </Badge>
-              </div>
-              <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Created:</span>
-                <span className={styles.infoValue}>
-                  {formatDateTime(dispute.created_at)}
-                </span>
-              </div>
-              {dispute.updated_at && (
-                <div className={styles.infoItem}>
-                  <span className={styles.infoLabel}>Last Updated:</span>
-                  <span className={styles.infoValue}>
-                    {formatDateTime(dispute.updated_at)}
-                  </span>
-                </div>
-              )}
+        {/* Dispute Information */}
+        <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <h3 className="text-base font-semibold text-slate-900 mb-4">Dispute Information</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <span className="text-sm text-slate-500">Filed By</span>
+              <p className="text-sm text-slate-900 mt-1">
+                {dispute.filer ? (
+                  <Link href={`/users/${dispute.filed_by}`} className="text-primary-600 hover:text-primary-700 transition-colors">
+                    {dispute.filer.name || dispute.filer.email}
+                  </Link>
+                ) : (
+                  `User ${String(dispute.filed_by).slice(0, 8)}`
+                )}
+              </p>
             </div>
-          </Card>
-
-          <Card variant="outlined" padding="md" className={styles.section}>
-            <h2 className={styles.sectionTitle}>Reason</h2>
-            <p className={styles.reasonText}>{dispute.reason}</p>
-          </Card>
-
-          {dispute.resolution && (
-            <Card variant="outlined" padding="md" className={styles.section}>
-              <h2 className={styles.sectionTitle}>Resolution</h2>
-              <p className={styles.resolutionText}>{dispute.resolution}</p>
-            </Card>
-          )}
-
-          <Card variant="outlined" padding="md" className={styles.section}>
-            <CardHeader>
-              <CardTitle as="h2">Admin Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className={styles.adminForm}>
-                <div className={styles.formGroup}>
-                  <label htmlFor="status-select">Status:</label>
-                  <select
-                    id="status-select"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className={styles.select}
-                  >
-                    <option value="open">Open</option>
-                    <option value="in_review">In Review</option>
-                    <option value="resolved">Resolved</option>
-                    <option value="closed">Closed</option>
-                  </select>
-                </div>
-
-                <Button
-                  variant="secondary"
-                  onClick={handleUpdateStatus}
-                  disabled={updating || status === dispute.status}
-                  isLoading={updating}
-                >
-                  Update Status
-                </Button>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="resolution">Resolution Notes:</label>
-                  <Textarea
-                    id="resolution"
-                    value={resolution}
-                    onChange={(e) => setResolution(e.target.value)}
-                    rows={6}
-                    placeholder="Enter resolution details..."
-                    fullWidth
-                  />
-                </div>
-
-                <Button
-                  variant="primary"
-                  onClick={handleResolve}
-                  disabled={updating || !resolution.trim()}
-                  isLoading={updating}
-                >
-                  Resolve Dispute
-                </Button>
+            <div>
+              <span className="text-sm text-slate-500">Role</span>
+              <p className="mt-1">
+                <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${
+                  dispute.filed_by_role === 'seller' ? 'bg-blue-50 text-blue-700 ring-blue-600/20' : 'bg-slate-50 text-slate-700 ring-slate-600/20'
+                }`}>
+                  {dispute.filed_by_role}
+                </span>
+              </p>
+            </div>
+            <div>
+              <span className="text-sm text-slate-500">Status</span>
+              <p className="mt-1">
+                <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${getStatusClasses(dispute.status)}`}>
+                  {dispute.status}
+                </span>
+              </p>
+            </div>
+            <div>
+              <span className="text-sm text-slate-500">Created</span>
+              <p className="text-sm text-slate-900 mt-1">{formatDateTime(dispute.created_at)}</p>
+            </div>
+            {dispute.updated_at && (
+              <div>
+                <span className="text-sm text-slate-500">Last Updated</span>
+                <p className="text-sm text-slate-900 mt-1">{formatDateTime(dispute.updated_at)}</p>
               </div>
-            </CardContent>
-          </Card>
+            )}
+          </div>
+        </div>
+
+        {/* Reason */}
+        <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <h3 className="text-base font-semibold text-slate-900 mb-4">Reason</h3>
+          <p className="text-sm text-slate-700 whitespace-pre-wrap">{dispute.reason}</p>
+        </div>
+
+        {/* Resolution */}
+        {dispute.resolution && (
+          <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <h3 className="text-base font-semibold text-slate-900 mb-4">Resolution</h3>
+            <p className="text-sm text-slate-700 whitespace-pre-wrap">{dispute.resolution}</p>
+          </div>
+        )}
+
+        {/* Admin Actions */}
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200">
+            <h3 className="text-base font-semibold text-slate-900">Admin Actions</h3>
+          </div>
+          <div className="p-6 space-y-4">
+            <div>
+              <label htmlFor="status-select" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Status
+              </label>
+              <select
+                id="status-select"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors bg-white"
+              >
+                <option value="open">Open</option>
+                <option value="in_review">In Review</option>
+                <option value="resolved">Resolved</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+
+            <button
+              onClick={handleUpdateStatus}
+              disabled={updating || status === dispute.status}
+              className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {updating ? 'Updating...' : 'Update Status'}
+            </button>
+
+            <div className="border-t border-slate-200 pt-4">
+              <label htmlFor="resolution" className="block text-sm font-medium text-slate-700 mb-1.5">
+                Resolution Notes
+              </label>
+              <textarea
+                id="resolution"
+                value={resolution}
+                onChange={(e) => setResolution(e.target.value)}
+                rows={6}
+                placeholder="Enter resolution details..."
+                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-vertical"
+              />
+            </div>
+
+            <button
+              onClick={handleResolve}
+              disabled={updating || !resolution.trim()}
+              className="rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {updating ? 'Resolving...' : 'Resolve Dispute'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
