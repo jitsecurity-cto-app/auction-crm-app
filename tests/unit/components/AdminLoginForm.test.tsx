@@ -25,10 +25,10 @@ describe('AdminLoginForm', () => {
   it('renders login form with email and password fields', () => {
     render(<AdminLoginForm />);
 
-    expect(screen.getByText('Admin Login')).toBeInTheDocument();
+    expect(screen.getByText('CRM Admin')).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
   });
 
   it('calls login function with form data on submit', async () => {
@@ -42,7 +42,7 @@ describe('AdminLoginForm', () => {
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole('button', { name: /login/i });
+    const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     fireEvent.change(emailInput, { target: { value: 'admin@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
@@ -67,7 +67,7 @@ describe('AdminLoginForm', () => {
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole('button', { name: /login/i });
+    const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     fireEvent.change(emailInput, { target: { value: 'admin@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
@@ -86,7 +86,7 @@ describe('AdminLoginForm', () => {
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole('button', { name: /login/i });
+    const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     fireEvent.change(emailInput, { target: { value: 'admin@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
@@ -115,17 +115,17 @@ describe('AdminLoginForm', () => {
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
-    const submitButton = screen.getByRole('button', { name: /login/i });
+    const submitButton = screen.getByRole('button', { name: /sign in/i });
 
     fireEvent.change(emailInput, { target: { value: 'admin@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
     fireEvent.click(submitButton);
 
-    expect(screen.getByText(/logging in/i)).toBeInTheDocument();
+    expect(screen.getByText(/signing in/i)).toBeInTheDocument();
     expect(submitButton).toBeDisabled();
 
     await waitFor(() => {
-      expect(screen.queryByText(/logging in/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/signing in/i)).not.toBeInTheDocument();
     });
   });
 

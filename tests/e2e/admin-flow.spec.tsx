@@ -89,6 +89,7 @@ describe('Admin Operations Flow E2E Tests', () => {
       (api.getAuctions as jest.Mock).mockResolvedValue(mockAuctions);
       (api.getUsers as jest.Mock).mockResolvedValue(mockUsers);
       (api.getBidsByAuction as jest.Mock).mockResolvedValue([]);
+      (api.getDisputes as jest.Mock).mockResolvedValue([]);
 
       render(<Dashboard />);
 
@@ -113,6 +114,7 @@ describe('Admin Operations Flow E2E Tests', () => {
       
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       (api.getAuctions as jest.Mock).mockRejectedValue(error);
+      (api.getDisputes as jest.Mock).mockResolvedValue([]);
 
       render(<Dashboard />);
 
@@ -244,8 +246,7 @@ describe('Admin Operations Flow E2E Tests', () => {
       expect(screen.getByText('exposed-hash-123')).toBeInTheDocument();
 
       // Change role without server-side validation
-      // UserForm uses "Role *" as the label text
-      const roleSelect = screen.getByLabelText('Role *');
+      const roleSelect = screen.getByLabelText('Role');
       await userEvent.selectOptions(roleSelect, 'admin');
 
       const submitButton = screen.getByRole('button', { name: /Update User/i });
@@ -343,7 +344,10 @@ describe('Admin Operations Flow E2E Tests', () => {
       (isAuthenticated as jest.Mock).mockReturnValue(true);
 
       const mockAuctions: Auction[] = [];
-      (api.getAuctions as jest.Mock).mockResolvedValue({ data: mockAuctions });
+      (api.getAuctions as jest.Mock).mockResolvedValue(mockAuctions);
+      (api.getUsers as jest.Mock).mockResolvedValue([]);
+      (api.getDisputes as jest.Mock).mockResolvedValue([]);
+      (api.getBidsByAuction as jest.Mock).mockResolvedValue([]);
 
       // Should still allow access (client-side check only)
       render(<Dashboard />);
