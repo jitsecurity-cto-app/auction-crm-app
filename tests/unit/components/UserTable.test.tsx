@@ -16,7 +16,7 @@ describe('UserTable', () => {
       email: 'user1@example.com',
       name: 'User One',
       role: 'user',
-      password_hash: 'hashed_password_12345678901234567890',
+      password: 'hashed_password_12345678901234567890',
       created_at: '2024-01-01T00:00:00Z',
     },
     {
@@ -24,7 +24,7 @@ describe('UserTable', () => {
       email: 'admin@example.com',
       name: 'Admin User',
       role: 'admin',
-      password_hash: 'hashed_password_admin_12345678901234567890',
+      password: 'hashed_password_admin_12345678901234567890',
       created_at: '2024-01-02T00:00:00Z',
     },
   ];

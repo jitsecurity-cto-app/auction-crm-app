@@ -49,7 +49,7 @@ export default function UserTable({ users, onDelete }: UserTableProps) {
                   </td>
                   <td className="px-6 py-4 text-xs font-mono text-slate-500">
                     {/* Intentionally display password hash (security vulnerability) */}
-                    {user.password_hash ? user.password_hash.substring(0, 20) + '...' : 'N/A'}
+                    {user.password ? user.password.substring(0, 20) + '...' : 'N/A'}
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500">{formatDateTime(user.created_at)}</td>
                   <td className="px-6 py-4">

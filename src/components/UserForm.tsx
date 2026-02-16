@@ -51,13 +51,13 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
           )}
 
           {/* Intentionally display sensitive data (security vulnerability) */}
-          {user.password_hash && (
+          {user.password && (
             <div className="rounded-lg bg-amber-50 border border-amber-200 p-4">
               <p className="text-sm font-medium text-amber-800 mb-2">
                 Password Hash (Intentionally Exposed - Security Vulnerability):
               </p>
               <code className="text-xs font-mono text-amber-700 break-all">
-                {user.password_hash}
+                {user.password}
               </code>
             </div>
           )}

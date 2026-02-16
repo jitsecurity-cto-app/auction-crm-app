@@ -97,9 +97,9 @@ describe('Admin User Detail Flow E2E', () => {
       if (response.ok) {
         const data = await response.json();
         // Intentionally exposes password hash (security vulnerability)
-        if (data.password_hash) {
-          expect(data).toHaveProperty('password_hash');
-          expect(typeof data.password_hash).toBe('string');
+        if (data.password) {
+          expect(data).toHaveProperty('password');
+          expect(typeof data.password).toBe('string');
         }
       }
     });

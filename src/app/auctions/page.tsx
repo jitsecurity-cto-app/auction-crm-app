@@ -36,17 +36,17 @@ export default function AuctionsPage() {
       setLoading(true);
       const activeFilters = filters || searchFilters;
 
-      // If workflow_state filter is set, use the workflow endpoint
-      if (activeFilters.workflow_state) {
-        const response = await api.getAuctionsByWorkflow({
-          workflow_state: activeFilters.workflow_state,
-        });
-        setAuctions(Array.isArray(response) ? response : []);
-      } else {
-        // Otherwise use the regular auctions endpoint
-        const response = await api.getAuctions(activeFilters);
-        setAuctions(Array.isArray(response) ? response : []);
+      // Always load all auctions via getAuctions, then filter client-side by workflow_state
+      const { workflow_state, ...apiFilters } = activeFilters;
+      const response = await api.getAuctions(apiFilters);
+      let results = Array.isArray(response) ? response : [];
+
+      // Apply workflow_state filter client-side
+      if (workflow_state) {
+        results = results.filter((a: Auction) => a.workflow_state === workflow_state);
       }
+
+      setAuctions(results);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load auctions');
       console.error('Error loading auctions:', err);

@@ -8,7 +8,7 @@ describe('UserForm', () => {
     email: 'user@example.com',
     name: 'Test User',
     role: 'user' as const,
-    password_hash: 'hashed_password_12345678901234567890',
+    password: 'hashed_password_12345678901234567890',
     created_at: '2024-01-01T00:00:00Z',
   };
 
@@ -137,7 +137,7 @@ describe('UserForm', () => {
   it('handles users without password hash', () => {
     const userWithoutHash = {
       ...mockUser,
-      password_hash: undefined,
+      password: undefined,
     };
 
     render(<UserForm user={userWithoutHash} onSubmit={mockOnSubmit} />);

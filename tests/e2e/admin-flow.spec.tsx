@@ -233,7 +233,7 @@ describe('Admin Operations Flow E2E Tests', () => {
         email: 'user@example.com',
         name: 'Test User',
         role: 'user',
-        password_hash: 'exposed-hash-123', // Intentionally exposed
+        password: 'exposed-hash-123', // Intentionally exposed
         created_at: new Date().toISOString(),
       };
 
@@ -364,7 +364,7 @@ describe('Admin Operations Flow E2E Tests', () => {
         email: 'user@example.com',
         name: 'Test User',
         role: 'user',
-        password_hash: 'sensitive-hash-data-12345',
+        password: 'sensitive-hash-data-12345',
         created_at: new Date().toISOString(),
       };
 

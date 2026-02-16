@@ -6,7 +6,7 @@ export interface User {
   email: string;
   name: string;
   role: 'user' | 'admin';
-  password_hash?: string; // Intentionally exposed in API (security vulnerability)
+  password?: string; // Intentionally exposed in API (security vulnerability)
   phone?: string;
   address?: string;
   created_at: string;
