@@ -136,9 +136,12 @@ describe('AuctionForm', () => {
   it('displays XSS vulnerability warning in description field', () => {
     render(<AuctionForm onSubmit={mockOnSubmit} />);
 
-    expect(
-      screen.getByText(/description will be rendered without sanitization/i)
-    ).toBeInTheDocument();
+    // The Textarea component passes helperText as an attribute on the textarea element
+    const descriptionTextarea = screen.getByLabelText(/description/i);
+    expect(descriptionTextarea).toHaveAttribute(
+      'helperText',
+      expect.stringMatching(/description will be rendered without sanitization/i)
+    );
   });
 });
 

@@ -18,6 +18,9 @@ describe('Dashboard', () => {
     (apiLib.api.getUsers as jest.Mock) = jest.fn(
       () => new Promise(() => {}) // Never resolves
     );
+    (apiLib.api.getDisputes as jest.Mock) = jest.fn(
+      () => new Promise(() => {}) // Never resolves
+    );
 
     render(<Dashboard />);
 
@@ -57,15 +60,11 @@ describe('Dashboard', () => {
       },
     ];
 
-    (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockResolvedValue({
-      data: mockAuctions,
-    });
-    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue({
-      data: mockUsers,
-    });
-    (apiLib.api.getBidsByAuction as jest.Mock) = jest.fn().mockResolvedValue({
-      data: [],
-    });
+    // API returns arrays directly, not wrapped in { data: [...] }
+    (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockResolvedValue(mockAuctions);
+    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue(mockUsers);
+    (apiLib.api.getDisputes as jest.Mock) = jest.fn().mockResolvedValue([]);
+    (apiLib.api.getBidsByAuction as jest.Mock) = jest.fn().mockResolvedValue([]);
 
     render(<Dashboard />);
 
@@ -75,7 +74,7 @@ describe('Dashboard', () => {
       expect(screen.getByText('Active Auctions')).toBeInTheDocument();
       expect(screen.getByText('Total Users')).toBeInTheDocument();
     });
-    
+
     // Check that stats are displayed (may appear multiple times)
     const statsValues = screen.getAllByText('2');
     expect(statsValues.length).toBeGreaterThan(0);
@@ -102,15 +101,13 @@ describe('Dashboard', () => {
       },
     ];
 
-    (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockResolvedValue({
-      data: mockAuctions,
-    });
-    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue({
-      data: mockUsers,
-    });
-    (apiLib.api.getBidsByAuction as jest.Mock) = jest.fn().mockResolvedValue({
-      data: [{ id: '1', amount: 100 }],
-    });
+    // API returns arrays directly, not wrapped in { data: [...] }
+    (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockResolvedValue(mockAuctions);
+    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue(mockUsers);
+    (apiLib.api.getDisputes as jest.Mock) = jest.fn().mockResolvedValue([]);
+    (apiLib.api.getBidsByAuction as jest.Mock) = jest.fn().mockResolvedValue(
+      [{ id: '1', amount: 100 }]
+    );
 
     render(<Dashboard />);
 
@@ -142,15 +139,11 @@ describe('Dashboard', () => {
       },
     ];
 
-    (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockResolvedValue({
-      data: mockAuctions,
-    });
-    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue({
-      data: mockUsers,
-    });
-    (apiLib.api.getBidsByAuction as jest.Mock) = jest.fn().mockResolvedValue({
-      data: [],
-    });
+    // API returns arrays directly, not wrapped in { data: [...] }
+    (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockResolvedValue(mockAuctions);
+    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue(mockUsers);
+    (apiLib.api.getDisputes as jest.Mock) = jest.fn().mockResolvedValue([]);
+    (apiLib.api.getBidsByAuction as jest.Mock) = jest.fn().mockResolvedValue([]);
 
     render(<Dashboard />);
 
@@ -164,9 +157,8 @@ describe('Dashboard', () => {
     (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockRejectedValue(
       new Error('API Error')
     );
-    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue({
-      data: [],
-    });
+    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue([]);
+    (apiLib.api.getDisputes as jest.Mock) = jest.fn().mockResolvedValue([]);
 
     render(<Dashboard />);
 
@@ -183,15 +175,13 @@ describe('Dashboard', () => {
       { id: '2', title: 'Auction 2', status: 'active', created_at: '2024-01-02T00:00:00Z' },
     ];
 
-    (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockResolvedValue({
-      data: mockAuctions,
-    });
-    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue({
-      data: [],
-    });
-    (apiLib.api.getBidsByAuction as jest.Mock)
-      .mockResolvedValueOnce({ data: [{ id: '1' }, { id: '2' }] })
-      .mockResolvedValueOnce({ data: [{ id: '3' }] });
+    // API returns arrays directly, not wrapped in { data: [...] }
+    (apiLib.api.getAuctions as jest.Mock) = jest.fn().mockResolvedValue(mockAuctions);
+    (apiLib.api.getUsers as jest.Mock) = jest.fn().mockResolvedValue([]);
+    (apiLib.api.getDisputes as jest.Mock) = jest.fn().mockResolvedValue([]);
+    (apiLib.api.getBidsByAuction as jest.Mock) = jest.fn()
+      .mockResolvedValueOnce([{ id: '1' }, { id: '2' }])
+      .mockResolvedValueOnce([{ id: '3' }]);
 
     render(<Dashboard />);
 

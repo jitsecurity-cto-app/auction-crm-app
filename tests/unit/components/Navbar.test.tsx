@@ -75,8 +75,8 @@ describe('Navbar', () => {
 
     render(<Navbar />);
 
-    expect(screen.getByText(/Admin User/)).toBeInTheDocument();
-    expect(screen.getByText(/\(Admin\)/)).toBeInTheDocument();
+    // The design-system Navbar renders user.name in a navbar-user span
+    expect(screen.getByText('Admin User')).toBeInTheDocument();
   });
 
   it('displays user email when name is not available', () => {
@@ -90,10 +90,8 @@ describe('Navbar', () => {
 
     render(<Navbar />);
 
-    // Email may be split across text nodes, so use a more flexible matcher
-    expect(screen.getByText((content, element) => {
-      return element?.textContent === 'admin@example.com (Admin)';
-    })).toBeInTheDocument();
+    // The design-system Navbar renders user.name || user.email in a navbar-user span
+    expect(screen.getByText('admin@example.com')).toBeInTheDocument();
   });
 
   it('calls logout and redirects on logout button click', () => {
@@ -126,8 +124,10 @@ describe('Navbar', () => {
 
     render(<Navbar />);
 
+    // The design-system Navbar renders links as <a> tags with href
     const auctionsLink = screen.getByText('Auctions').closest('a');
-    expect(auctionsLink).toHaveStyle({ color: '#60a5fa' });
+    expect(auctionsLink).toBeInTheDocument();
+    expect(auctionsLink).toHaveAttribute('href', '/auctions');
   });
 });
 

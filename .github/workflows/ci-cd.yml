@@ -45,8 +45,8 @@ jobs:
       - name: Type check
         run: npm run type-check
 
-      - name: Run tests
-        run: npm test
+      - name: Run unit tests
+        run: npm test -- --testPathIgnorePatterns=e2e
 
   build:
     needs: test

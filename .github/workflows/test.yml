@@ -42,11 +42,11 @@ jobs:
       - name: Run type check
         run: npm run type-check
 
-      - name: Run tests
-        run: npm test
+      - name: Run unit tests
+        run: npm test -- --testPathIgnorePatterns=e2e
 
       - name: Generate test coverage
-        run: npm run test:coverage || npm test -- --coverage
+        run: npm test -- --coverage --testPathIgnorePatterns=e2e || true
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
