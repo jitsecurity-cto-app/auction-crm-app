@@ -28,6 +28,20 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface AuctionImage {
+  id: string;
+  auction_id: string;
+  s3_key: string;
+  original_filename: string;
+  content_type: string;
+  file_size: number;
+  sort_order: number;
+  is_primary: boolean;
+  url: string | null;
+  thumbnail_url: string | null;
+  created_at: string;
+}
+
 export interface Auction {
   id: string;
   title: string;
@@ -35,7 +49,8 @@ export interface Auction {
   starting_price: number;
   current_bid: number;
   end_time: string;
-  status: 'active' | 'ended' | 'cancelled';
+  start_time?: string;
+  status: 'active' | 'ended' | 'cancelled' | 'scheduled';
   workflow_state?: 'active' | 'pending_sale' | 'shipping' | 'complete';
   created_by: string;
   winner_id?: string;
@@ -43,6 +58,8 @@ export interface Auction {
   created_at: string;
   creator?: User;
   order?: Order;
+  images?: AuctionImage[];
+  primary_image?: AuctionImage;
 }
 
 export interface Bid {
@@ -104,6 +121,40 @@ export interface Dispute {
   auction?: Auction;
   order?: Order;
   filer?: User;
+}
+
+export interface AuditEvent {
+  id: string;
+  entity_type: string;
+  entity_id: string;
+  action: string;
+  actor_id: string;
+  actor_email?: string;
+  old_values?: Record<string, any>;
+  new_values?: Record<string, any>;
+  ip_address?: string;
+  timestamp: string;
+}
+
+export interface AnalyticsData {
+  revenue_over_time: Array<{ date: string; revenue: number }>;
+  bid_activity: Array<{ date: string; count: number }>;
+  top_auctions: Array<{ id: string; title: string; total_bids: number; final_price: number }>;
+  conversion_rate: number;
+  total_revenue: number;
+  total_auctions: number;
+  active_users: number;
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  metadata?: Record<string, any>;
+  created_at: string;
 }
 
 // Admin-specific types
