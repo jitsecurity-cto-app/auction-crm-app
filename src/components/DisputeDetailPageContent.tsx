@@ -28,7 +28,9 @@ export default function DisputeDetailPageContent({ id: rawId }: DisputeDetailPag
       router.push('/login');
       return;
     }
-    fetchDispute();
+    if (id) {
+      fetchDispute();
+    }
   }, [id, router]);
 
   const fetchDispute = async () => {

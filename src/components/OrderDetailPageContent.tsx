@@ -32,7 +32,9 @@ export default function OrderDetailPageContent({ id: rawId }: OrderDetailPageCon
       return;
     }
 
-    fetchOrder();
+    if (id) {
+      fetchOrder();
+    }
   }, [id, router]);
 
   const fetchOrder = async () => {
