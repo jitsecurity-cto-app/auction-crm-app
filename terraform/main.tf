@@ -123,7 +123,7 @@ function handler(event) {
     var resource = segments[1];
     var id = segments[2];
     if (dynamicResources.indexOf(resource) >= 0 &&
-        id && id !== 'new' && id !== 'placeholder' && id !== 'index.html' && id !== '') {
+        id && id !== 'new' && id !== 'placeholder' && id !== 'index.html' && id !== 'index.txt' && id !== '') {
       segments[2] = 'placeholder';
       request.uri = segments.join('/');
     }
