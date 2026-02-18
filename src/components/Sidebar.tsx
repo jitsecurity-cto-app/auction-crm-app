@@ -124,10 +124,8 @@ export default function Sidebar() {
       >
         {/* Logo area */}
         <div className="flex h-16 items-center gap-3 px-6 border-b border-slate-800">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-500 text-white font-bold text-sm">
-            A
-          </div>
-          <span className="text-lg font-bold text-white">CRM Admin</span>
+          <img src="/logo.png" alt="AuctionsPulse" className="h-8 w-auto" />
+          <span className="text-lg font-bold text-white">Admin</span>
         </div>
 
         {/* Nav links */}

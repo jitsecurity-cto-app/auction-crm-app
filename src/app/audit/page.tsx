@@ -62,13 +62,14 @@ export default function AuditPage() {
   };
 
   return (
-    <div className="p-8 space-y-6">
-      {/* Header */}
-      <div>
+    <div>
+      {/* Page Header */}
+      <div className="border-b border-slate-200 bg-white px-8 py-6">
         <h1 className="text-2xl font-bold text-slate-900">Audit Trail</h1>
         <p className="text-sm text-slate-500 mt-1">View all system activity and changes</p>
       </div>
 
+      <div className="p-8 space-y-6">
       {/* Filters */}
       <div className="bg-white rounded-xl border border-slate-200 p-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -170,6 +171,7 @@ export default function AuditPage() {
             </table>
           </div>
         )}
+      </div>
       </div>
     </div>
   );
