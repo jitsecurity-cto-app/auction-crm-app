@@ -101,6 +101,39 @@ resource "aws_s3_bucket_cors_configuration" "crm_app" {
   }
 }
 
+# CloudFront Function to rewrite dynamic route URLs to placeholder pages
+# Static export only generates /{resource}/placeholder/index.html for dynamic routes.
+# This rewrites /{resource}/{id}/ -> /{resource}/placeholder/ so S3 finds the file.
+# The client component then reads the real ID from the browser URL.
+resource "aws_cloudfront_function" "url_rewrite" {
+  name    = "${var.project_name}-crm-url-rewrite-${var.environment}"
+  runtime = "cloudfront-js-2.0"
+  comment = "Rewrite dynamic route URLs to static export placeholder pages"
+  publish = true
+  code    = <<-EOT
+function handler(event) {
+  var request = event.request;
+  var uri = request.uri;
+  var segments = uri.split('/');
+  var dynamicResources = ['auctions', 'users', 'orders', 'disputes'];
+
+  // Rewrite /{resource}/{id}[/...] -> /{resource}/placeholder[/...]
+  // Skip known static routes: 'new', 'placeholder', empty
+  if (segments.length >= 3) {
+    var resource = segments[1];
+    var id = segments[2];
+    if (dynamicResources.indexOf(resource) >= 0 &&
+        id && id !== 'new' && id !== 'placeholder' && id !== 'index.html' && id !== '') {
+      segments[2] = 'placeholder';
+      request.uri = segments.join('/');
+    }
+  }
+
+  return request;
+}
+EOT
+}
+
 # CloudFront Distribution
 # Note: Using S3 website endpoint directly for simplicity (lab setup)
 # OAI removed - not needed for simple lab configuration
@@ -141,6 +174,11 @@ resource "aws_cloudfront_distribution" "crm_app" {
     default_ttl            = 3600
     max_ttl                = 86400
     compress               = true
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.url_rewrite.arn
+    }
   }
 
   # Cache behavior for static assets
@@ -164,18 +202,18 @@ resource "aws_cloudfront_distribution" "crm_app" {
     compress               = true
   }
 
-  # SPA fallback: serve index.html for 404s so Next.js client-side router handles dynamic routes
+  # Custom 404 page for truly non-existent routes
   custom_error_response {
     error_code            = 404
-    response_code         = 200
-    response_page_path    = "/index.html"
+    response_code         = 404
+    response_page_path    = "/404.html"
     error_caching_min_ttl = 0
   }
 
   custom_error_response {
     error_code            = 403
-    response_code         = 200
-    response_page_path    = "/index.html"
+    response_code         = 403
+    response_page_path    = "/404.html"
     error_caching_min_ttl = 0
   }
 

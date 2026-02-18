@@ -6,12 +6,14 @@ import { isAuthenticated } from '../lib/auth';
 import { api } from '../lib/api';
 import { User } from '../types';
 import UserForm from './UserForm';
+import { useResolvedParam } from '../hooks/useResolvedParam';
 
 interface UserDetailPageContentProps {
   id: string;
 }
 
-export default function UserDetailPageContent({ id }: UserDetailPageContentProps) {
+export default function UserDetailPageContent({ id: rawId }: UserDetailPageContentProps) {
+  const id = useResolvedParam(rawId);
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);

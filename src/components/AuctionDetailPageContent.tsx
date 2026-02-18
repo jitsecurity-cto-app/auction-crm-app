@@ -9,12 +9,14 @@ import AuctionForm from './AuctionForm';
 import WorkflowVisualization from './WorkflowVisualization';
 import WorkflowStateBadge from './WorkflowStateBadge';
 import { formatCurrency } from '@design-system/utils';
+import { useResolvedParam } from '../hooks/useResolvedParam';
 
 interface AuctionDetailPageContentProps {
   id: string;
 }
 
-export default function AuctionDetailPageContent({ id }: AuctionDetailPageContentProps) {
+export default function AuctionDetailPageContent({ id: rawId }: AuctionDetailPageContentProps) {
+  const id = useResolvedParam(rawId);
   const router = useRouter();
   const [auction, setAuction] = useState<Auction | null>(null);
   const [loading, setLoading] = useState(true);

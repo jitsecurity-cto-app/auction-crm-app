@@ -8,12 +8,14 @@ import { api } from '../lib/api';
 import { Order } from '../types';
 import { formatCurrency } from '@design-system/utils';
 import WorkflowStateBadge from './WorkflowStateBadge';
+import { useResolvedParam } from '../hooks/useResolvedParam';
 
 interface OrderDetailPageContentProps {
   id: string;
 }
 
-export default function OrderDetailPageContent({ id }: OrderDetailPageContentProps) {
+export default function OrderDetailPageContent({ id: rawId }: OrderDetailPageContentProps) {
+  const id = useResolvedParam(rawId);
   const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);

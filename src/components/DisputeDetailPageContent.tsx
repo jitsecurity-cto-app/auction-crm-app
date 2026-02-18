@@ -7,12 +7,14 @@ import { isAuthenticated } from '../lib/auth';
 import { api } from '../lib/api';
 import { Dispute } from '../types';
 import { formatDateTime } from '@design-system/utils';
+import { useResolvedParam } from '../hooks/useResolvedParam';
 
 interface DisputeDetailPageContentProps {
   id: string;
 }
 
-export default function DisputeDetailPageContent({ id }: DisputeDetailPageContentProps) {
+export default function DisputeDetailPageContent({ id: rawId }: DisputeDetailPageContentProps) {
+  const id = useResolvedParam(rawId);
   const router = useRouter();
   const [dispute, setDispute] = useState<Dispute | null>(null);
   const [loading, setLoading] = useState(true);
