@@ -13,6 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `window.__ORIGINAL_PATHNAME__=window.location.pathname;` }} />
+      </head>
       <body className="min-h-screen bg-slate-100">
         <AppShell>{children}</AppShell>
       </body>
